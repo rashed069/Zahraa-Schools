@@ -1,0 +1,4871 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدرسة الزهراء الخاصة | البوابة الرقمية للمتابعة والتقييم</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            800: '#1e3a8a',
+                            900: '#0f172a',
+                            950: '#090e1a',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .hero-pattern {
+            background-color: #0f172a;
+            background-image: radial-gradient(circle at 15% 50%, rgba(30, 58, 138, 0.78) 0%, transparent 55%),
+                              radial-gradient(circle at 85% 20%, rgba(217, 119, 6, 0.25) 0%, transparent 45%);
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @media print {
+            header, footer, #toast-container, #public-view, #teacher-view, #admin-auth-container,
+            #manager-dashboard-box > div:first-child, #manager-dashboard-box > div:nth-child(2),
+            #manager-dashboard-box > div:nth-child(3), .no-print {
+                display: none !important;
+            }
+            body, #manager-view, #manager-dashboard-box, #mgr-tab-reports, #mgr-tab-certificates {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #printable-report-output, #printable-certificate-output {
+                box-shadow: none !important;
+                border: 2px solid #0f172a !important;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-gold-500 selection:text-white">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 left-5 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- ===================================================================== -->
+    <!-- TOP NAVIGATION BAR (3 CLEAR PORTALS)                                  -->
+    <!-- ===================================================================== -->
+    <header class="sticky top-0 z-40 bg-navy-950/95 backdrop-blur-md text-white border-b border-gold-500/30 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col lg:flex-row items-center justify-between gap-3">
+            <!-- School Identity -->
+            <div onclick="switchMainView('public')" class="flex items-center gap-3 cursor-pointer group">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 text-navy-950 flex items-center justify-center text-xl shadow-md group-hover:scale-105 transition">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-black tracking-tight text-white">مدرسة الزهراء الخاصة</h1>
+                    <p class="text-[11px] font-bold text-gold-400">البوابة الرقمية لمتابعة الطلاب — من KG 1 إلى الثالث الإعدادي</p>
+                </div>
+            </div>
+
+            <!-- Navigation Portals -->
+            <nav class="flex flex-wrap items-center justify-center gap-2">
+                <button type="button" onclick="switchMainView('public')" id="nav-btn-public" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-gold-500 text-navy-950 shadow-sm transition flex items-center gap-2">
+                    <i class="fa-solid fa-house-user"></i>
+                    <span>بوابة الطالب وولي الأمر</span>
+                </button>
+                <button type="button" onclick="switchMainView('teacher')" id="nav-btn-teacher" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-white/10 hover:bg-white/20 text-white border border-white/15 transition flex items-center gap-2">
+                    <i class="fa-solid fa-chalkboard-user text-emerald-400"></i>
+                    <span>بوابة المدرسين</span>
+                </button>
+                <button type="button" onclick="switchMainView('manager')" id="nav-btn-manager" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-white/10 hover:bg-white/20 text-white border border-white/15 transition flex items-center gap-2">
+                    <i class="fa-solid fa-user-shield text-gold-400"></i>
+                    <span>بوابة دخول المدير</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 1: PUBLIC PORTAL (بوابة الطالب وولي الأمر)                       -->
+    <!-- ===================================================================== -->
+    <main id="public-view" class="flex-1 space-y-10 pb-14">
+
+        <!-- Hero Section -->
+        <section class="hero-pattern text-white py-10 sm:py-14 border-b border-gold-500/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-7 space-y-4">
+                    <span class="inline-flex items-center gap-2 bg-gold-500/20 text-gold-400 border border-gold-400/30 px-3.5 py-1 rounded-full text-xs font-extrabold">
+                        <i class="fa-solid fa-sparkles"></i>
+                        <span>منظومة المتابعة التربوية والأكاديمية الذكية</span>
+                    </span>
+                    <h2 class="text-2xl sm:text-4xl font-black leading-tight">
+                        متابعة دقيقة ومباشرة لأبنائنا في <span class="text-gold-400">مدرسة الزهراء الخاصة</span>
+                    </h2>
+                    <p class="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">
+                        استخرج كود الطالب الخاص بك باستخدام الاسم الرباعي، وتابع الحضور والغياب، السلوك داخل الحصة، والدرجات والواجبات في جميع المواد الدراسية بخصوصية وأمان تام.
+                    </p>
+                </div>
+
+                <!-- Official Approved School Broadcast Card -->
+                <div class="lg:col-span-5">
+                    <div class="bg-white/10 backdrop-blur-md border border-gold-500/30 rounded-3xl p-6 space-y-4 shadow-xl">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-black text-gold-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-radio"></i>
+                                <span>الإذاعة المدرسية المعتمدة من إدارة المدرسة</span>
+                            </span>
+                            <span class="bg-gold-500 text-navy-950 font-black text-xs px-3 py-1 rounded-full">معتمدة رسمياً</span>
+                        </div>
+                        <h3 id="top-broadcast-grade" class="text-lg font-black text-white">جاري التحميل...</h3>
+                        <p id="top-broadcast-topic" class="text-xs text-slate-200 leading-relaxed"></p>
+                        <div id="top-broadcast-meta" class="pt-2 border-t border-white/10 flex items-center justify-between gap-2 text-xs"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- School Announcements Banner -->
+        <section id="public-announcements-board" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-3xl p-6 border border-amber-200 shadow-sm space-y-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-base">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-black text-navy-900">لوحة إعلانات وتنبيهات إدارة المدرسة</h3>
+                        <p class="text-xs text-slate-500">أحدث التعليمات والمواعيد الهامة لأولياء الأمور والطلاب</p>
+                    </div>
+                </div>
+                <div id="public-announcements-list" class="space-y-3"></div>
+            </div>
+        </section>
+
+        <!-- Student Code Lookup & Parent Inquiry Grid -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- 1. Student Self-Service Code Lookup -->
+            <div class="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm space-y-5 h-fit">
+                <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                    <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-id-card"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base sm:text-lg font-black text-navy-900">استخراج كود الطالب بالاسم الرباعي</h3>
+                        <p class="text-xs text-slate-500">أدخل اسمك الرباعي وصفك الدراسي لإظهار كودك الخاص</p>
+                    </div>
+                </div>
+
+                <form onsubmit="handleStudentCodeRegistration(event)" class="space-y-4">
+                    <div>
+                        <label for="reg-student-fullname" class="block text-xs font-extrabold text-navy-900 mb-1.5">الاسم الرباعي للطالب *</label>
+                        <input type="text" id="reg-student-fullname" required placeholder="أدخل الاسم الرباعي للطالب بالكامل" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:bg-white focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label for="reg-student-grade" class="block text-xs font-extrabold text-navy-900 mb-1.5">الصف الدراسي *</label>
+                        <select id="reg-student-grade" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:bg-white focus:outline-none">
+                            <option value="KG 1">KG 1</option>
+                            <option value="KG 2">KG 2</option>
+                            <option value="الأول الابتدائي">الأول الابتدائي</option>
+                            <option value="الثاني الابتدائي">الثاني الابتدائي</option>
+                            <option value="الثالث الابتدائي">الثالث الابتدائي</option>
+                            <option value="الرابع الابتدائي" selected>الرابع الابتدائي</option>
+                            <option value="الخامس الابتدائي">الخامس الابتدائي</option>
+                            <option value="السادس الابتدائي">السادس الابتدائي</option>
+                            <option value="الأول الإعدادي">الأول الإعدادي</option>
+                            <option value="الثاني الإعدادي">الثاني الإعدادي</option>
+                            <option value="الثالث الإعدادي">الثالث الإعدادي</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-xl text-sm shadow-sm transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>إظهار كود الطالب الخاص بي</span>
+                    </button>
+                </form>
+
+                <div id="student-code-result"></div>
+            </div>
+
+            <!-- 2. Parent Inquiry by Student Code -->
+            <div class="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-sm space-y-5">
+                <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                    <div class="w-11 h-11 rounded-2xl bg-navy-900 text-gold-400 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base sm:text-lg font-black text-navy-900">استعلام ولي الأمر بكود الطالب</h3>
+                        <p class="text-xs text-slate-500">متابعة الحضور والغياب، السلوكيات، والدرجات والواجبات لكل مادة</p>
+                    </div>
+                </div>
+
+                <form onsubmit="handleStudentInquiry(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
+                    <div class="sm:col-span-5">
+                        <label for="inquiry-subject" class="block text-xs font-extrabold text-navy-900 mb-1.5">المادة الدراسية *</label>
+                        <select id="inquiry-subject" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-3 text-sm font-bold text-slate-800 focus:border-navy-800 focus:bg-white focus:outline-none">
+                            <option value="اللغة العربية">اللغة العربية</option>
+                            <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                            <option value="الرياضيات">الرياضيات</option>
+                            <option value="العلوم">العلوم</option>
+                            <option value="اكتشف">اكتشف</option>
+                            <option value="الدراسات الاجتماعية">الدراسات الاجتماعية</option>
+                            <option value="التربية الدينية">التربية الدينية</option>
+                            <option value="تكنولوجيا المعلومات">تكنولوجيا المعلومات</option>
+                            <option value="المهارات المهنية">المهارات المهنية</option>
+                        </select>
+                    </div>
+
+                    <div class="sm:col-span-4">
+                        <label for="inquiry-code" class="block text-xs font-extrabold text-navy-900 mb-1.5">كود الطالب *</label>
+                        <input type="text" id="inquiry-code" required placeholder="أدخل كود الطالب" dir="ltr" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-center text-sm font-mono font-black text-navy-900 focus:border-navy-800 focus:bg-white focus:outline-none">
+                    </div>
+
+                    <div class="sm:col-span-3 flex items-end">
+                        <button type="submit" class="w-full bg-navy-900 hover:bg-navy-800 text-white font-black py-3 rounded-xl text-sm shadow-sm transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-search text-gold-400"></i>
+                            <span>استعلام</span>
+                        </button>
+                    </div>
+                </form>
+
+                <div id="student-inquiry-result"></div>
+            </div>
+        </section>
+
+        <!-- Weekly Distinguished Students Showcase -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-gold-500/20 text-gold-700 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-navy-900">لوحة شرف الطلاب المتميزين</h3>
+                    <p class="text-xs text-slate-500">تكريم الطلاب المتفوقين علمياً وسلوكياً في مختلف الصفوف الدراسية</p>
+                </div>
+            </div>
+            <div id="public-stars-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+        </section>
+
+        <!-- Poetry Oasis Section (واحة الشعر والأدب) -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-feather-pointed"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-navy-900">واحة الشعر والأدب الطلابي</h3>
+                    <p class="text-xs text-slate-500">مساحة للإبداع الأدبي — أرسل قصيدتك ليتم مراجعتها ونشرها من إدارة المدرسة</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-5 bg-white rounded-3xl p-6 border border-purple-200 shadow-2xs space-y-4 h-fit">
+                    <h4 class="text-sm font-black text-navy-900">إرسال قصيدة جديدة للمراجعة</h4>
+                    <form onsubmit="handleSubmitStudentPoem(event)" class="space-y-3">
+                        <div>
+                            <label class="block text-[11px] font-extrabold text-slate-700 mb-1">اسم الطالب الشاعر *</label>
+                            <input type="text" id="poem-author" required placeholder="الاسم بالكامل" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">الصف الدراسي *</label>
+                                <select id="poem-grade" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                    <option value="KG 1">KG 1</option>
+                                    <option value="KG 2">KG 2</option>
+                                    <option value="الأول الابتدائي">الأول الابتدائي</option>
+                                    <option value="الثاني الابتدائي">الثاني الابتدائي</option>
+                                    <option value="الثالث الابتدائي">الثالث الابتدائي</option>
+                                    <option value="الرابع الابتدائي" selected>الرابع الابتدائي</option>
+                                    <option value="الخامس الابتدائي">الخامس الابتدائي</option>
+                                    <option value="السادس الابتدائي">السادس الابتدائي</option>
+                                    <option value="الأول الإعدادي">الأول الإعدادي</option>
+                                    <option value="الثاني الإعدادي">الثاني الإعدادي</option>
+                                    <option value="الثالث الإعدادي">الثالث الإعدادي</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">عنوان القصيدة *</label>
+                                <input type="text" id="poem-title" required placeholder="مثال: مدرستي الغالية" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-extrabold text-slate-700 mb-1">أبيات القصيدة *</label>
+                            <textarea id="poem-content" rows="3" required placeholder="اكتب أبيات القصيدة هنا..." class="w-full rounded-xl border border-slate-300 bg-slate-50 p-3 text-xs font-bold"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-black py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>إرسال القصيدة لإدارة المدرسة</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4" id="public-poems-grid"></div>
+            </div>
+        </section>
+
+        <!-- Official School Broadcasts Schedule Section -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-microphone-lines"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-navy-900">جدول الإذاعات المدرسية المعتمدة</h3>
+                    <p class="text-xs text-slate-500">الإذاعات المدرسية المحددة والمعتمدة من إدارة مدرسة الزهراء الخاصة</p>
+                </div>
+            </div>
+
+            <div id="public-broadcasts-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+        </section>
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 2: TEACHERS PORTAL (بوابة المدرسين)                              -->
+    <!-- ===================================================================== -->
+    <section id="teacher-view" class="hidden flex-1 py-8 sm:py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- A. Teacher Login Card -->
+            <div id="teacher-login-box" class="max-w-lg mx-auto bg-white rounded-3xl shadow-xl border border-slate-200/90 overflow-hidden fade-in">
+                <div class="bg-gradient-to-l from-emerald-950 via-navy-900 to-emerald-900 p-7 text-center text-white border-b border-emerald-400/30">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500 text-white flex items-center justify-center mx-auto mb-3 text-2xl shadow-md">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <h2 class="text-xl font-black">بوابة دخول المدرسين</h2>
+                    <p class="text-xs text-emerald-200 mt-1">مدرسة الزهراء الخاصة — رصد الدرجات والحضور والسلوك</p>
+                </div>
+
+                <form onsubmit="handleTeacherLogin(event)" class="p-6 sm:p-7 space-y-4">
+                    <div>
+                        <label for="t-login-name" class="block text-xs font-extrabold text-navy-900 mb-1.5">الاسم بالكامل *</label>
+                        <input type="text" id="t-login-name" required placeholder="أدخل اسم المعلم بالكامل" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-800 focus:border-emerald-700 focus:bg-white focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label for="t-login-email" class="block text-xs font-extrabold text-navy-900 mb-1.5">الجيميل (Gmail) *</label>
+                        <input type="email" id="t-login-email" required placeholder="teacher@gmail.com" dir="ltr" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-mono font-bold text-slate-800 text-left focus:border-emerald-700 focus:bg-white focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label for="t-login-subject" class="block text-xs font-extrabold text-navy-900 mb-1.5">المادة الدراسية *</label>
+                        <select id="t-login-subject" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-800 focus:border-emerald-700 focus:bg-white focus:outline-none">
+                            <option value="اللغة العربية">اللغة العربية</option>
+                            <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                            <option value="الرياضيات">الرياضيات</option>
+                            <option value="العلوم">العلوم</option>
+                            <option value="اكتشف">اكتشف</option>
+                            <option value="الدراسات الاجتماعية">الدراسات الاجتماعية</option>
+                            <option value="التربية الدينية">التربية الدينية</option>
+                            <option value="تكنولوجيا المعلومات">تكنولوجيا المعلومات</option>
+                            <option value="المهارات المهنية">المهارات المهنية</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-xs font-extrabold text-navy-900">الصفوف الدراسية التي يدرّس لها (اختر صفاً واحداً أو أكثر) *</label>
+                            <span id="t-selected-grades-count" class="text-[11px] font-black text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">0 محدد</span>
+                        </div>
+                        <div id="t-login-grades-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 bg-slate-50 border border-slate-300 rounded-2xl p-3 max-h-52 overflow-y-auto">
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 cursor-pointer hover:border-emerald-600 transition">
+                                <input type="checkbox" name="t-login-grade-item" value="KG 1" onchange="updateSelectedTeacherGradesCount()" class="rounded text-emerald-600">
+                                <span>KG 1</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 cursor-pointer hover:border-emerald-600 transition">
+                                <input type="checkbox" name="t-login-grade-item" value="KG 2" onchange="updateSelectedTeacherGradesCount()" class="rounded text-emerald-600">
+                                <span>KG 2</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 cursor-pointer hover:border-emerald-600 transition">
+                                <input type="checkbox" name="t-login-grade-item" value="الأول الابتدائي" onchange="updateSelectedTeacherGradesCount()" class="rounded text-emerald-600">
+                                <span>الأول الابتدائي</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 cursor-pointer hover:border-emerald-600 transition">
+                                <input type="checkbox" name="t-login-grade-item" value="الثاني الابتدائي" onchange="updateSelectedTeacherGradesCount()" class="rounded text-emerald-600">
+                                <span>الثاني الابتدائي</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 cursor-pointer hover:border-emerald-600 transition">
+                                <input type="checkbox" name="t-login-grade-item" value="الثالث الابتدائي" onchange="updateSelectedTeacherGradesCount()" class="rounded text-emerald-600">
+                                <span>الثالث الابتدائي</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 cursor-pointer hover:border-emerald-600 transition">
+                                <input type="checkbox" name="t-login-grade-item" value="الرابع الابتدائي" onchange="updateSelectedTeacherGradesCount()" class="rounded text-emerald-600">
+                                <span>الرابع الابتدائي</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 cursor-pointer hover:border-emerald-600 transition">
+                                <input type="checkbox" name="t-login-grade-item" value="الخامس الابتدائي" onchange="updateSelectedTeacherGradesCount()" class="rounded text-emerald-600">
+                                <span>الخامس الابتدائي</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 cursor-pointer hover:border-emerald-600 transition">
+                                <input type="checkbox" name="t-login-grade-item" value="السادس الابتدائي" onchange="updateSelectedTeacherGradesCount()" class="rounded text-emerald-600">
+                                <span>السادس الابتدائي</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 cursor-pointer hover:border-emerald-600 transition">
+                                <input type="checkbox" name="t-login-grade-item" value="الأول الإعدادي" onchange="updateSelectedTeacherGradesCount()" class="rounded text-emerald-600">
+                                <span>الأول الإعدادي</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 cursor-pointer hover:border-emerald-600 transition">
+                                <input type="checkbox" name="t-login-grade-item" value="الثاني الإعدادي" onchange="updateSelectedTeacherGradesCount()" class="rounded text-emerald-600">
+                                <span>الثاني الإعدادي</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-800 cursor-pointer hover:border-emerald-600 transition">
+                                <input type="checkbox" name="t-login-grade-item" value="الثالث الإعدادي" onchange="updateSelectedTeacherGradesCount()" class="rounded text-emerald-600">
+                                <span>الثالث الإعدادي</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="t-login-pin" class="block text-xs font-extrabold text-navy-900 mb-1.5">الرقم السري للمدرسين *</label>
+                        <input type="password" id="t-login-pin" required placeholder="••••••" dir="ltr" class="w-full rounded-xl border-2 border-emerald-900/20 bg-slate-50 px-4 py-3 text-center text-base font-mono font-black tracking-widest text-navy-900 focus:border-emerald-700 focus:bg-white focus:outline-none">
+                    </div>
+
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3.5 rounded-xl text-sm shadow-md transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span>دخول لوحة تحكم المعلم</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- B. Teacher Authenticated Dashboard -->
+            <div id="teacher-dashboard-box" class="hidden space-y-6 fade-in">
+                <div class="bg-gradient-to-l from-navy-950 to-emerald-950 text-white rounded-3xl p-6 shadow-md border border-emerald-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-black text-2xl shrink-0">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h2 id="dash-teacher-name" class="text-lg sm:text-xl font-black">لوحة تحكم المعلم</h2>
+                                <span id="dash-teacher-subject-badge" class="text-[11px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-3 py-0.5 rounded-full"></span>
+                                <span id="dash-teacher-grades-badge" class="text-[11px] font-extrabold bg-gold-500/20 text-gold-300 border border-gold-400/30 px-3 py-0.5 rounded-full"></span>
+                            </div>
+                            <p id="dash-teacher-email" class="text-xs text-slate-300 font-mono mt-1" dir="ltr"></p>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="logoutTeacher()" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-400/30 font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>تسجيل الخروج</span>
+                    </button>
+                </div>
+
+                <!-- Teacher Stats -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
+                        <span class="text-xs font-bold text-slate-500">إجمالي طلاب الكشف</span>
+                        <p id="stat-students" class="text-2xl font-black text-navy-900 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
+                        <span class="text-xs font-bold text-slate-500">الدرجات والواجبات المرصودة</span>
+                        <p id="stat-grades" class="text-2xl font-black text-emerald-700 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
+                        <span class="text-xs font-bold text-slate-500">سجلات الغياب والسلوك</span>
+                        <p id="stat-attendance" class="text-2xl font-black text-amber-600 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
+                        <span class="text-xs font-bold text-slate-500">الطلاب المتميزون</span>
+                        <p id="stat-stars" class="text-2xl font-black text-indigo-700 mt-1">0</p>
+                    </div>
+                </div>
+
+                <!-- Teacher Tabs -->
+                <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
+                    <button type="button" onclick="switchDashboardTab('grades')" id="tab-btn-grades" class="bg-navy-900 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-file-pen text-gold-400"></i>
+                        <span>1. رصد الدرجات والواجبات</span>
+                    </button>
+                    <button type="button" onclick="switchDashboardTab('attendance')" id="tab-btn-attendance" class="bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-clipboard-user text-emerald-600"></i>
+                        <span>2. رصد الغياب والسلوك</span>
+                    </button>
+                    <button type="button" onclick="switchDashboardTab('stars')" id="tab-btn-stars" class="bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-star text-amber-500"></i>
+                        <span>3. ترشيح طالب متميز</span>
+                    </button>
+                </div>
+
+                <!-- TEACHER TAB 1: GRADES & ASSIGNMENTS -->
+                <div id="dash-tab-grades" class="space-y-6">
+                    <div id="teacher-grading-lock-banner" class="hidden bg-rose-50 border-2 border-rose-300 text-rose-900 p-4 rounded-2xl text-xs font-black flex items-center gap-2.5">
+                        <i class="fa-solid fa-lock text-rose-600 text-base"></i>
+                        <span>تنبيه إداري: تم إغلاق رصد وتعديل الدرجات مؤقتاً بقرار من إدارة المدرسة.</span>
+                    </div>
+
+                    <div id="teacher-grade-form-card" class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-5">
+                        <h3 class="text-base font-black text-navy-900">إضافة درجة تقييم أو واجب منزلي</h3>
+                        <form onsubmit="handleAddGrade(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">المادة الدراسية</label>
+                                <input type="text" id="grd-subject" readonly class="w-full rounded-xl border border-slate-200 bg-slate-100 px-3 py-2.5 text-xs font-black text-navy-900">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">الصف الدراسي</label>
+                                <select id="grd-grade" onchange="populateGradeStudentDropdown()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold"></select>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">اختر الطالب *</label>
+                                <select id="grd-student-code" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold"></select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">نوع التقييم *</label>
+                                <select id="grd-type" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                    <option value="اختبار أسبوعي">اختبار أسبوعي</option>
+                                    <option value="امتحان شهري">امتحان شهري</option>
+                                    <option value="واجب منزلي">واجب منزلي</option>
+                                    <option value="مشاركة وتفاعل">مشاركة وتفاعل</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">عنوان التقييم / الواجب *</label>
+                                <input type="text" id="grd-title" required placeholder="مثال: تقييم الوحدة الأولى" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[11px] font-extrabold text-slate-700 mb-1">الدرجة *</label>
+                                    <input type="number" step="0.5" id="grd-score" required placeholder="10" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-black text-center">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-extrabold text-slate-700 mb-1">العظمى *</label>
+                                    <input type="number" step="0.5" id="grd-max" value="10" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-black text-center">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">حالة التسليم / الأداء</label>
+                                <select id="grd-status" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                    <option value="ممتاز ومكتمل">ممتاز ومكتمل</option>
+                                    <option value="جيد جداً">جيد جداً</option>
+                                    <option value="يحتاج مراجعة">يحتاج مراجعة</option>
+                                    <option value="لم يسلم الواجب">لم يسلم الواجب</option>
+                                </select>
+                            </div>
+                            <div class="sm:col-span-2 lg:col-span-4 flex justify-end">
+                                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2">
+                                    <i class="fa-solid fa-check"></i>
+                                    <span>اعتماد وحفظ الدرجة</span>
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- OCR Image Grade Sheet Upload -->
+                        <div class="pt-4 border-t border-slate-200 space-y-3">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div>
+                                    <h4 class="text-xs font-black text-navy-900 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-camera text-indigo-600"></i>
+                                        <span>رصد تلقائي للدرجات من صورة كشف الورقي (OCR)</span>
+                                    </h4>
+                                    <p class="text-[11px] text-slate-500">ارفع صورة لكشف الدرجات وسيتم استخراج الأسماء والدرجات للمراجعة قبل الاعتماد</p>
+                                </div>
+                                <label for="ocr-grade-image-input" class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-4 py-2 rounded-xl text-xs transition inline-flex items-center gap-2 w-fit">
+                                    <i class="fa-solid fa-image"></i>
+                                    <span>رفع صورة كشف الدرجات</span>
+                                </label>
+                                <input type="file" id="ocr-grade-image-input" accept="image/*" onchange="handleGradeSheetOcrUpload(event)" class="hidden">
+                            </div>
+                            <p id="ocr-grade-status" class="text-[11px] font-bold text-slate-500"></p>
+                            <div id="ocr-grade-preview-box" class="hidden space-y-3 bg-slate-50 border border-slate-200 rounded-2xl p-4">
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-right text-xs">
+                                        <thead class="bg-slate-200/70 text-navy-900 font-black">
+                                            <tr>
+                                                <th class="py-2 px-3">الطالب المطابق</th>
+                                                <th class="py-2 px-3 w-28">الدرجة</th>
+                                                <th class="py-2 px-3 w-28">العظمى</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ocr-grade-preview-tbody" class="divide-y divide-slate-200 bg-white"></tbody>
+                                    </table>
+                                </div>
+                                <div class="flex justify-end gap-2">
+                                    <button type="button" onclick="document.getElementById('ocr-grade-preview-box').classList.add('hidden')" class="bg-slate-200 text-slate-800 font-bold px-4 py-2 rounded-xl text-xs">إلغاء</button>
+                                    <button type="button" onclick="commitOcrGrades()" class="bg-emerald-600 text-white font-black px-5 py-2 rounded-xl text-xs">اعتماد الدرجات المستخرجة</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-2xs">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-xs">
+                                <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold">
+                                    <tr>
+                                        <th class="py-3 px-4">الطالب</th>
+                                        <th class="py-3 px-4">الصف والمادة</th>
+                                        <th class="py-3 px-4">التقييم</th>
+                                        <th class="py-3 px-4">الدرجة</th>
+                                        <th class="py-3 px-4">المعلم</th>
+                                        <th class="py-3 px-4 text-left">حذف</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-grades-tbody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TEACHER TAB 2: ATTENDANCE & BEHAVIOR -->
+                <div id="dash-tab-attendance" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-4">
+                        <h3 class="text-base font-black text-navy-900">تسجيل الحضور والغياب والملاحظة السلوكية</h3>
+                        <form onsubmit="handleAddAttendanceAndBehavior(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">المادة الدراسية</label>
+                                <input type="text" id="att-subject" readonly class="w-full rounded-xl border border-slate-200 bg-slate-100 px-3 py-2.5 text-xs font-black text-navy-900">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">التاريخ *</label>
+                                <input type="date" id="att-date" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">الصف الدراسي</label>
+                                <select id="att-grade" onchange="populateAttStudentDropdown()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold"></select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">اختر الطالب *</label>
+                                <select id="att-student-code" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold"></select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">حالة الحضور *</label>
+                                <select id="att-status" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                    <option value="present">حاضر ✓</option>
+                                    <option value="absent">غائب ✕</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">تصنيف السلوك *</label>
+                                <select id="att-behavior-type" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                    <option value="positive">سلوك إيجابي 👍</option>
+                                    <option value="negative">سلوك سلبي 👎</option>
+                                </select>
+                            </div>
+                            <div class="sm:col-span-2 lg:col-span-3">
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">الملاحظة السلوكية *</label>
+                                <input type="text" id="att-behavior-note" required placeholder="اكتب وصف السلوك داخل الحصة (مثال: ملتزم ومنتبه طوال الحصة)" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                            </div>
+                            <div class="sm:col-span-2 lg:col-span-3 flex justify-end">
+                                <button type="submit" class="bg-navy-900 hover:bg-navy-800 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2">
+                                    <i class="fa-solid fa-check text-gold-400"></i>
+                                    <span>حفظ سجل الحضور والسلوك</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-2xs">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-xs">
+                                <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold">
+                                    <tr>
+                                        <th class="py-3 px-4">الطالب</th>
+                                        <th class="py-3 px-4">الصف والمادة</th>
+                                        <th class="py-3 px-4">التاريخ</th>
+                                        <th class="py-3 px-4">الحضور</th>
+                                        <th class="py-3 px-4">السلوك</th>
+                                        <th class="py-3 px-4 text-left">حذف</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dash-att-tbody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TEACHER TAB 3: NOMINATE DISTINGUISHED STUDENT -->
+                <div id="dash-tab-stars" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-4">
+                        <h3 class="text-base font-black text-navy-900">ترشيح طالب متميز للوحة الشرف</h3>
+                        <form onsubmit="handleAddStarStudent(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">المادة الدراسية</label>
+                                <input type="text" id="star-subject" readonly class="w-full rounded-xl border border-slate-200 bg-slate-100 px-3 py-2.5 text-xs font-black text-navy-900">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">الصف الدراسي</label>
+                                <select id="star-grade" onchange="populateStarStudentDropdown()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold"></select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">اختر الطالب *</label>
+                                <select id="star-student-code" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold"></select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">التاريخ *</label>
+                                <input type="date" id="star-date" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">سبب التميز والتكريم *</label>
+                                <input type="text" id="star-reason" required placeholder="مثال: التفوق الدراسي والالتزام بأداء جميع الواجبات" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                            </div>
+                            <div class="sm:col-span-3 flex justify-end">
+                                <button type="submit" class="bg-gold-500 hover:bg-gold-600 text-navy-950 font-black px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2">
+                                    <i class="fa-solid fa-trophy"></i>
+                                    <span>نشر في لوحة الشرف</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="dash-stars-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 3: MANAGER & VICE PRINCIPAL PORTAL (بوابة دخول المدير والوكيل)    -->
+    <!-- ===================================================================== -->
+    <section id="manager-view" class="hidden flex-1 py-8 sm:py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- A. MANAGER & VICE PRINCIPAL LOGIN FORMS -->
+            <div id="admin-auth-container" class="max-w-md mx-auto space-y-6 fade-in">
+                <!-- 1. بوابة دخول المدير -->
+                <div id="manager-login-box" class="bg-white rounded-3xl shadow-xl border border-slate-200/90 overflow-hidden">
+                    <div class="bg-gradient-to-l from-navy-950 via-navy-900 to-navy-800 p-7 text-center text-white border-b border-gold-500/30">
+                        <div class="w-14 h-14 rounded-2xl bg-gold-500 text-navy-950 flex items-center justify-center mx-auto mb-3 text-2xl shadow-md">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <h2 class="text-xl font-black text-white">بوابة دخول المدير</h2>
+                        <p class="text-xs text-slate-300 mt-1">مدرسة الزهراء الخاصة — الإدارة المدرسية والإشراف العام</p>
+                    </div>
+
+                    <form onsubmit="handleManagerLogin(event)" class="p-6 sm:p-7 space-y-4">
+                        <div>
+                            <label for="m-login-name" class="block text-xs font-extrabold text-navy-900 mb-1.5">
+                                <i class="fa-solid fa-user-tie text-gold-600 ml-1"></i>
+                                الاسم *
+                            </label>
+                            <input type="text" id="m-login-name" required placeholder="أدخل اسم المدير بالكامل" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-800 focus:border-navy-800 focus:bg-white focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label for="m-login-pin" class="block text-xs font-extrabold text-navy-900 mb-1.5">
+                                <i class="fa-solid fa-lock text-gold-600 ml-1"></i>
+                                الرقم السري *
+                            </label>
+                            <input type="password" id="m-login-pin" required placeholder="••••••••••" dir="ltr" class="w-full rounded-xl border-2 border-navy-900/20 bg-slate-50 px-4 py-3 text-center text-base font-mono font-black tracking-wider text-navy-900 focus:border-navy-800 focus:bg-white focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label for="m-login-email" class="block text-xs font-extrabold text-navy-900 mb-1.5">
+                                <i class="fa-brands fa-google text-gold-600 ml-1"></i>
+                                الجيميل *
+                            </label>
+                            <input type="email" id="m-login-email" required placeholder="example@gmail.com" dir="ltr" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-mono font-bold text-slate-800 text-left focus:border-navy-800 focus:bg-white focus:outline-none">
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-l from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-navy-950 font-black py-3.5 rounded-xl text-sm shadow-md transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                            <span>دخول لوحة تحكم المدير</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 2. بوابة دخول الوكيل -->
+                <div id="vice-principal-login-box" class="bg-white rounded-3xl shadow-xl border border-indigo-200/90 overflow-hidden">
+                    <div class="bg-gradient-to-l from-indigo-950 via-navy-900 to-indigo-900 p-6 text-center text-white border-b border-indigo-400/30">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-500 text-white flex items-center justify-center mx-auto mb-2.5 text-xl shadow-md">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                        <h3 class="text-lg font-black text-white">بوابة دخول الوكيل</h3>
+                        <p class="text-xs text-indigo-200 mt-1">وكيل مدرسة الزهراء الخاصة — الإشراف والمتابعة</p>
+                    </div>
+
+                    <form onsubmit="handleVicePrincipalLogin(event)" class="p-6 sm:p-7 space-y-4">
+                        <div>
+                            <label for="vp-login-name" class="block text-xs font-extrabold text-navy-900 mb-1.5">
+                                <i class="fa-solid fa-user-tie text-indigo-600 ml-1"></i>
+                                الاسم *
+                            </label>
+                            <input type="text" id="vp-login-name" required placeholder="أدخل اسم الوكيل بالكامل" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-800 focus:border-indigo-700 focus:bg-white focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label for="vp-login-pin" class="block text-xs font-extrabold text-navy-900 mb-1.5">
+                                <i class="fa-solid fa-lock text-indigo-600 ml-1"></i>
+                                الرقم السري *
+                            </label>
+                            <input type="password" id="vp-login-pin" required placeholder="••••••••••" dir="ltr" class="w-full rounded-xl border-2 border-indigo-900/20 bg-slate-50 px-4 py-3 text-center text-base font-mono font-black tracking-wider text-navy-900 focus:border-indigo-700 focus:bg-white focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label for="vp-login-email" class="block text-xs font-extrabold text-navy-900 mb-1.5">
+                                <i class="fa-brands fa-google text-indigo-600 ml-1"></i>
+                                الجيميل *
+                            </label>
+                            <input type="email" id="vp-login-email" required placeholder="example@gmail.com" dir="ltr" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-mono font-bold text-slate-800 text-left focus:border-indigo-700 focus:bg-white focus:outline-none">
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-l from-indigo-600 to-navy-900 hover:from-indigo-700 hover:to-navy-950 text-white font-black py-3.5 rounded-xl text-sm shadow-md transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-right-to-bracket text-gold-400"></i>
+                            <span>دخول بوابة الوكيل</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- B. MANAGER / VICE PRINCIPAL AUTHENTICATED DASHBOARD -->
+            <div id="manager-dashboard-box" class="hidden space-y-6 fade-in">
+                <div class="bg-gradient-to-l from-navy-950 to-navy-900 text-white rounded-3xl p-6 shadow-md border border-gold-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-gold-500 text-navy-950 flex items-center justify-center font-black text-2xl shrink-0">
+                            <i class="fa-solid fa-crown"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h2 id="dash-manager-name" class="text-lg sm:text-xl font-black">لوحة التحكم الإدارية</h2>
+                                <span id="dash-manager-role-badge" class="text-[11px] font-extrabold bg-gold-500/20 text-gold-400 border border-gold-400/30 px-3 py-0.5 rounded-full">مدير المدرسة</span>
+                            </div>
+                            <p id="dash-manager-email" class="text-xs text-slate-300 font-mono mt-1" dir="ltr"></p>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="logoutManager()" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-400/30 font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>تسجيل الخروج</span>
+                    </button>
+                </div>
+
+                <!-- Overview KPIs -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
+                        <span class="text-xs font-bold text-slate-500">الطلاب المسجلون بالكشف</span>
+                        <p id="mgr-stat-students" class="text-2xl font-black text-navy-900 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
+                        <span class="text-xs font-bold text-slate-500">إجمالي التقييمات والدرجات</span>
+                        <p id="mgr-stat-grades" class="text-2xl font-black text-emerald-700 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
+                        <span class="text-xs font-bold text-slate-500">سجلات الحضور والسلوك</span>
+                        <p id="mgr-stat-attendance" class="text-2xl font-black text-amber-600 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
+                        <span class="text-xs font-bold text-slate-500">لوحة الشرف والإذاعات المعتمدة</span>
+                        <p id="mgr-stat-stars" class="text-2xl font-black text-navy-800 mt-1">0</p>
+                    </div>
+                </div>
+
+                <!-- Dashboard Tabs (ALL 10 TABS FULLY WIRED) -->
+                <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-3 no-print">
+                    <button type="button" onclick="switchManagerTab('overview')" id="mgr-tab-btn-overview" class="mgr-tab-btn bg-navy-900 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-chart-pie text-gold-400"></i>
+                        <span>الإشراف والإذاعة</span>
+                    </button>
+                    <button type="button" onclick="switchManagerTab('students')" id="mgr-tab-btn-students" class="mgr-tab-btn bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-users text-emerald-600"></i>
+                        <span>كشوفات الطلاب</span>
+                    </button>
+                    <button type="button" onclick="switchManagerTab('poems')" id="mgr-tab-btn-poems" class="mgr-tab-btn bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-feather-pointed text-purple-600"></i>
+                        <span>مراجعة القصائد</span>
+                        <span id="mgr-pending-poems-badge" class="hidden bg-purple-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full">0</span>
+                    </button>
+                    <button type="button" onclick="switchManagerTab('announcements')" id="mgr-tab-btn-announcements" class="mgr-tab-btn bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-bullhorn text-amber-600"></i>
+                        <span>الإعلانات والتنبيهات</span>
+                    </button>
+                    <button type="button" onclick="switchManagerTab('messages')" id="mgr-tab-btn-messages" class="mgr-tab-btn bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-envelope text-sky-600"></i>
+                        <span>رسائل أولياء الأمور</span>
+                        <span id="mgr-unread-msg-badge" class="hidden bg-rose-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full">0</span>
+                    </button>
+                    <button type="button" onclick="switchManagerTab('schedules')" id="mgr-tab-btn-schedules" class="mgr-tab-btn bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-calendar-days text-teal-600"></i>
+                        <span>الجداول المدرسية</span>
+                    </button>
+                    <button type="button" onclick="switchManagerTab('excuses')" id="mgr-tab-btn-excuses" class="mgr-tab-btn bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-file-medical text-purple-600"></i>
+                        <span>الأعذار والأذونات</span>
+                    </button>
+                    <button type="button" onclick="switchManagerTab('certificates')" id="mgr-tab-btn-certificates" class="mgr-tab-btn bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-award text-gold-600"></i>
+                        <span>شهادات التقدير</span>
+                    </button>
+                    <button type="button" onclick="switchManagerTab('reports')" id="mgr-tab-btn-reports" class="mgr-tab-btn bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-print text-indigo-600"></i>
+                        <span>التقارير والطباعة</span>
+                    </button>
+                    <button type="button" onclick="switchManagerTab('records')" id="mgr-tab-btn-records" class="mgr-tab-btn bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition">
+                        <i class="fa-solid fa-shield-halved text-rose-600"></i>
+                        <span>السجلات والأمان</span>
+                    </button>
+                </div>
+
+                <!-- TAB 1: OVERVIEW, TEACHER ACTIVITY, GRADING LOCK & OFFICIAL BROADCAST -->
+                <div id="mgr-tab-overview" class="space-y-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-base font-black text-navy-900">التحكم في صلاحية رصد الدرجات للمدرسين</h3>
+                            <p class="text-xs text-slate-500 mt-1">يمكنك إغلاق رصد الدرجات بعد اعتماد نتائج الأسبوع أو الشهر لمنع أي تعديل إلا بإذن الإدارة.</p>
+                        </div>
+                        <button type="button" id="btn-toggle-grading-lock" onclick="toggleGradingLock()" class="bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 font-black px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-2 shrink-0">
+                            <i class="fa-solid fa-lock"></i>
+                            <span id="grading-lock-label">رصد الدرجات مفتوح (إغلاق الرصد)</span>
+                        </button>
+                    </div>
+
+                    <!-- Admin Exclusive Official School Broadcast Assignment -->
+                    <div class="bg-white p-6 rounded-3xl border border-indigo-200/90 shadow-2xs space-y-4">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base">
+                                <i class="fa-solid fa-radio"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-black text-navy-900">تحديد الإذاعة المدرسية المعتمدة</h3>
+                                <p class="text-xs text-slate-500 mt-0.5">يحدد مدير المدرسة أو الوكيل الصف الدراسي وعنوان الإذاعة لتظهر رسمياً للطلاب وأولياء الأمور</p>
+                            </div>
+                        </div>
+                        <form onsubmit="handleAdminAssignBroadcast(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">الصف الدراسي *</label>
+                                <select id="mgr-bc-grade" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                    <option value="KG 1">KG 1</option>
+                                    <option value="KG 2">KG 2</option>
+                                    <option value="الأول الابتدائي">الأول الابتدائي</option>
+                                    <option value="الثاني الابتدائي">الثاني الابتدائي</option>
+                                    <option value="الثالث الابتدائي">الثالث الابتدائي</option>
+                                    <option value="الرابع الابتدائي">الرابع الابتدائي</option>
+                                    <option value="الخامس الابتدائي">الخامس الابتدائي</option>
+                                    <option value="السادس الابتدائي" selected>السادس الابتدائي</option>
+                                    <option value="الأول الإعدادي">الأول الإعدادي</option>
+                                    <option value="الثاني الإعدادي">الثاني الإعدادي</option>
+                                    <option value="الثالث الإعدادي">الثالث الإعدادي</option>
+                                </select>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">عنوان الإذاعة المدرسية *</label>
+                                <div class="flex flex-col sm:flex-row gap-2">
+                                    <input type="text" id="mgr-bc-topic" required placeholder="اكتب عنوان الإذاعة المدرسية المعتمدة..." class="flex-1 rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 shrink-0">
+                                        <i class="fa-solid fa-check"></i>
+                                        <span>اعتماد الإذاعة</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="mgr-overview-broadcasts-list" class="space-y-2 pt-2"></div>
+                    </div>
+
+                    <!-- Teacher Activity Log -->
+                    <div class="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-2xs">
+                        <div class="p-5 border-b border-slate-100">
+                            <h3 class="text-base font-black text-navy-900">سجل دخول ونشاط هيئة التدريس</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">متابعة مواعيد دخول المدرسين وآخر عمليات الرصد التي قاموا بها</p>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-xs">
+                                <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold">
+                                    <tr>
+                                        <th class="py-3 px-4">اسم المعلم</th>
+                                        <th class="py-3 px-4">المادة</th>
+                                        <th class="py-3 px-4">الصفوف</th>
+                                        <th class="py-3 px-4">البريد الإلكتروني</th>
+                                        <th class="py-3 px-4">وقت الدخول</th>
+                                        <th class="py-3 px-4">آخر نشاط</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mgr-teacher-activity-tbody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: STUDENT ROSTER & PDF IMPORT -->
+                <div id="mgr-tab-students" class="hidden space-y-6">
+                    <!-- Upload Student Roster via PDF -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-5">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+                            <div>
+                                <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-file-pdf text-rose-600 text-lg"></i>
+                                    <span>تسجيل واستيراد كشوفات الطلاب عبر ملف PDF</span>
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-1">ارفع ملف PDF لكشف الفصل وسيقوم النظام بقراءة الصفحات واستخراج الأسماء الرباعية والأكواد تلقائياً للمراجعة قبل الاعتماد</p>
+                            </div>
+                            <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 text-[11px] font-black px-3 py-1 rounded-full w-fit">
+                                يدعم الجداول العربية وتوليد الأكواد التلقائي
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
+                            <div>
+                                <label for="roster-pdf-default-grade" class="block text-[11px] font-extrabold text-slate-700 mb-1.5">الصف الدراسي الافتراضي للكشف *</label>
+                                <select id="roster-pdf-default-grade" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-3 text-xs font-bold text-slate-800 focus:border-navy-800 focus:bg-white focus:outline-none">
+                                    <option value="KG 1">KG 1</option>
+                                    <option value="KG 2">KG 2</option>
+                                    <option value="الأول الابتدائي">الأول الابتدائي</option>
+                                    <option value="الثاني الابتدائي">الثاني الابتدائي</option>
+                                    <option value="الثالث الابتدائي">الثالث الابتدائي</option>
+                                    <option value="الرابع الابتدائي" selected>الرابع الابتدائي</option>
+                                    <option value="الخامس الابتدائي">الخامس الابتدائي</option>
+                                    <option value="السادس الابتدائي">السادس الابتدائي</option>
+                                    <option value="الأول الإعدادي">الأول الإعدادي</option>
+                                    <option value="الثاني الإعدادي">الثاني الإعدادي</option>
+                                    <option value="الثالث الإعدادي">الثالث الإعدادي</option>
+                                </select>
+                            </div>
+
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1.5">اختر ملف كشف الطلاب بصيغة PDF *</label>
+                                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 border-2 border-dashed border-navy-900/25 bg-slate-50 hover:bg-indigo-50/40 rounded-2xl p-3 transition">
+                                    <label for="roster-pdf-file-input" class="cursor-pointer bg-navy-900 hover:bg-navy-800 text-white font-black px-5 py-2.5 rounded-xl text-xs transition inline-flex items-center justify-center gap-2 shrink-0 shadow-xs">
+                                        <i class="fa-solid fa-cloud-arrow-up text-gold-400"></i>
+                                        <span>اختيار ملف PDF للكشف</span>
+                                    </label>
+                                    <input type="file" id="roster-pdf-file-input" accept=".pdf,application/pdf" onchange="handleRosterPdfUpload(event)" class="hidden">
+                                    <span id="roster-pdf-status-label" class="text-xs font-bold text-slate-600 truncate">لم يتم اختيار ملف PDF بعد</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Instant Editable Preview Table for Extracted PDF Students -->
+                        <div id="roster-pdf-preview-box" class="hidden space-y-4 pt-3 border-t border-slate-200 fade-in">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-amber-50 border border-amber-200 rounded-2xl p-3.5">
+                                <div class="flex items-center gap-2 text-xs font-black text-amber-950">
+                                    <i class="fa-solid fa-eye text-amber-600"></i>
+                                    <span id="roster-pdf-preview-count">معاينة الطلاب المستخرجين من الملف (0 طالب)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" onclick="addEmptyPreviewRosterRow()" class="bg-white hover:bg-slate-100 text-navy-900 border border-slate-300 font-extrabold px-3 py-1.5 rounded-xl text-xs transition">
+                                        <i class="fa-solid fa-plus ml-1 text-emerald-600"></i>إضافة صف للمعاينة
+                                    </button>
+                                    <button type="button" onclick="clearRosterPdfPreview()" class="bg-rose-100 hover:bg-rose-200 text-rose-800 font-extrabold px-3 py-1.5 rounded-xl text-xs transition">
+                                        إلغاء المعاينة
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto border border-slate-200 rounded-2xl max-h-96">
+                                <table class="w-full text-right text-xs">
+                                    <thead class="bg-slate-100 border-b border-slate-200 text-navy-900 font-black sticky top-0">
+                                        <tr>
+                                            <th class="py-2.5 px-3 w-10">#</th>
+                                            <th class="py-2.5 px-3">الاسم الرباعي للطالب</th>
+                                            <th class="py-2.5 px-3 w-44">كود الطالب</th>
+                                            <th class="py-2.5 px-3 w-44">الصف الدراسي</th>
+                                            <th class="py-2.5 px-3 text-left w-16">حذف</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="roster-pdf-preview-tbody" class="divide-y divide-slate-100 bg-white"></tbody>
+                                </table>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="button" onclick="commitExtractedPdfRoster()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-7 py-3 rounded-xl text-xs sm:text-sm shadow-md transition flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span>اعتماد وحفظ الكشف في قاعدة بيانات المدرسة</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Registered Students Roster Table -->
+                    <div class="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-2xs">
+                        <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <h4 class="text-sm font-black text-navy-900">كشف الطلاب المعتمدين وأكوادهم الرسمية</h4>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <input type="text" id="mgr-search-student" oninput="refreshManagerDashboard()" placeholder="بحث بالاسم أو الكود..." class="rounded-xl border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-bold w-full sm:w-56">
+                                <button type="button" onclick="printInternalRosterDirect()" class="bg-navy-900 hover:bg-navy-800 text-white font-extrabold px-3.5 py-1.5 rounded-xl text-xs transition flex items-center gap-1.5 shrink-0">
+                                    <i class="fa-solid fa-file-pdf text-gold-400"></i>
+                                    <span>تصدير / طباعة PDF</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-xs">
+                                <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold">
+                                    <tr>
+                                        <th class="py-3 px-4">الاسم الرباعي</th>
+                                        <th class="py-3 px-4">الصف الدراسي</th>
+                                        <th class="py-3 px-4">كود الطالب</th>
+                                        <th class="py-3 px-4 text-left">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mgr-students-tbody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: POEMS MODERATION (مراجعة القصائد) -->
+                <div id="mgr-tab-poems" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div>
+                                <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-feather-pointed text-purple-600"></i>
+                                    <span>مراجعة واعتماد قصائد الطلاب لواحة الشعر والأدب</span>
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">قم بمراجعة القصائد المرسلة من الطلاب واعتماد نشرها في الصفحة الرئيسية أو حذفها</p>
+                            </div>
+                        </div>
+                        <div id="mgr-poems-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: ANNOUNCEMENTS & TARGETED PARENT ALERTS -->
+                <div id="mgr-tab-announcements" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-4">
+                        <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                            <i class="fa-solid fa-bullhorn text-gold-600"></i>
+                            <span>إدارة لوحة إعلانات المدرسة</span>
+                        </h3>
+                        <form onsubmit="handleAddAnnouncement(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3.5">
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">عنوان الإعلان *</label>
+                                <input type="text" id="ann-title" required placeholder="مثال: موعد اجتماع أولياء الأمور" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">أولوية الإعلان *</label>
+                                <select id="ann-priority" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                    <option value="normal">إعلان عام</option>
+                                    <option value="important">هام</option>
+                                    <option value="urgent">عاجل جداً</option>
+                                </select>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">نص الإعلان أو التنبيه *</label>
+                                <input type="text" id="ann-body" required placeholder="اكتب تفاصيل الإعلان الإداري هنا..." class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                            </div>
+                            <div class="sm:col-span-4 flex justify-end">
+                                <button type="submit" class="bg-navy-900 hover:bg-navy-800 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2">
+                                    <i class="fa-solid fa-plus text-gold-400"></i>
+                                    <span>نشر الإعلان في واجهة المدرسة</span>
+                                </button>
+                            </div>
+                        </form>
+                        <div id="mgr-announcements-list" class="space-y-2.5 pt-2"></div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-4">
+                        <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                            <i class="fa-solid fa-bell text-rose-600"></i>
+                            <span>إرسال تنبيه إداري خاص لولي أمر طالب محدد</span>
+                        </h3>
+                        <form onsubmit="handleSaveParentAlert(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">اختر الطالب من الكشف *</label>
+                                <select id="alert-student-code" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold"></select>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">رسالة التنبيه لولي الأمر *</label>
+                                <input type="text" id="alert-message-input" required placeholder="مثال: يرجى مراجعة مكتب شؤون الطلاب غداً" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                            </div>
+                            <div class="sm:col-span-3 flex justify-end">
+                                <button type="submit" class="bg-gold-500 hover:bg-gold-600 text-navy-950 font-black px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                    <span>حفظ وتفعيل التنبيه لولي الأمر</span>
+                                </button>
+                            </div>
+                        </form>
+                        <div id="mgr-parent-alerts-list" class="space-y-2 pt-2"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 5: PARENT MESSAGES & COMPLAINTS INBOX -->
+                <div id="mgr-tab-messages" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                            <div>
+                                <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                                    <i class="fa-solid fa-envelope-open-text text-sky-600"></i>
+                                    <span>صندوق رسائل ومقترحات أولياء الأمور</span>
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">استعراض استفسارات وشكاوى وطلبات مقابلة أولياء الأمور والرد عليها رسمياً</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs font-extrabold text-slate-700">تصفية:</label>
+                                <select id="mgr-msg-filter" onchange="refreshManagerDashboard()" class="rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-bold">
+                                    <option value="all">جميع الرسائل</option>
+                                    <option value="pending">بانتظار الرد</option>
+                                    <option value="replied">تم الرد عليها</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="mgr-parent-messages-list" class="space-y-4"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 6: CLASS & EXAM SCHEDULES MANAGEMENT -->
+                <div id="mgr-tab-schedules" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-4">
+                        <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-days text-teal-600"></i>
+                            <span>إضافة أو تحديث جدول حصص أسبوعي / جدول امتحانات</span>
+                        </h3>
+                        <form onsubmit="handleSaveSchedule(event)" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                                <div>
+                                    <label class="block text-[11px] font-extrabold text-slate-700 mb-1">الصف الدراسي *</label>
+                                    <select id="sch-grade" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                        <option value="KG 1">KG 1</option>
+                                        <option value="KG 2">KG 2</option>
+                                        <option value="الأول الابتدائي">الأول الابتدائي</option>
+                                        <option value="الثاني الابتدائي">الثاني الابتدائي</option>
+                                        <option value="الثالث الابتدائي">الثالث الابتدائي</option>
+                                        <option value="الرابع الابتدائي" selected>الرابع الابتدائي</option>
+                                        <option value="الخامس الابتدائي">الخامس الابتدائي</option>
+                                        <option value="السادس الابتدائي">السادس الابتدائي</option>
+                                        <option value="الأول الإعدادي">الأول الإعدادي</option>
+                                        <option value="الثاني الإعدادي">الثاني الإعدادي</option>
+                                        <option value="الثالث الإعدادي">الثالث الإعدادي</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-extrabold text-slate-700 mb-1">نوع الجدول *</label>
+                                    <select id="sch-type" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                        <option value="جدول الحصص الأسبوعي">جدول الحصص الأسبوعي</option>
+                                        <option value="جدول الامتحانات">جدول الامتحانات</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-extrabold text-slate-700 mb-1">عنوان الجدول *</label>
+                                    <input type="text" id="sch-title" required placeholder="مثال: جدول امتحانات شهر نوفمبر 2026" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="text-xs font-black text-navy-900">بنود وصفوف الجدول (اليوم/التاريخ — المادة — التوقيت/الحصة — ملاحظات)</h4>
+                                    <button type="button" onclick="addScheduleRowInput()" class="bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-3 py-1.5 rounded-xl text-xs transition flex items-center gap-1.5">
+                                        <i class="fa-solid fa-plus"></i>
+                                        <span>إضافة صف جديد</span>
+                                    </button>
+                                </div>
+                                <div id="sch-rows-builder" class="space-y-2.5"></div>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="submit" class="bg-navy-900 hover:bg-navy-800 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2">
+                                    <i class="fa-solid fa-check text-gold-400"></i>
+                                    <span>اعتماد ونشر الجدول لأولياء الأمور</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-4">
+                        <h4 class="text-sm font-black text-navy-900">الجداول المنشورة حالياً حسب الصفوف</h4>
+                        <div id="mgr-schedules-list" class="space-y-4"></div>
+                    </div>
+                </div>
+
+                <!-- TAB 7: OFFICIAL EXCUSES & EARLY LEAVE LOG -->
+                <div id="mgr-tab-excuses" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-4">
+                        <div>
+                            <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                                <i class="fa-solid fa-file-medical text-purple-600"></i>
+                                <span>تسجيل الأعذار الرسمية وأذونات الانصراف المبكر</span>
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">أي غياب مسجل للطالب في تاريخ العذر المعتمد يتحول تلقائياً إلى «غياب بعذر رسمي مقبول» في تقرير ولي الأمر والتقارير الرسمية.</p>
+                        </div>
+                        <form onsubmit="handleAddOfficialExcuse(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3.5">
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">اختر الطالب من الكشف *</label>
+                                <select id="exc-student-code" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold"></select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">تاريخ العذر / الإذن *</label>
+                                <input type="date" id="exc-date" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">نوع العذر / الإذن *</label>
+                                <select id="exc-type" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                    <option value="عذر مرضي">عذر مرضي</option>
+                                    <option value="عذر عائلي مقبول">عذر عائلي مقبول</option>
+                                    <option value="إذن انصراف مبكر">إذن انصراف مبكر</option>
+                                </select>
+                            </div>
+                            <div class="sm:col-span-4">
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">تفاصيل وملاحظات العذر *</label>
+                                <input type="text" id="exc-reason" required placeholder="مثال: تقديم شهادة طبية معتمدة من ولي الأمر / انصراف مبكر الساعة 12 ظهراً" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                            </div>
+                            <div class="sm:col-span-4 flex justify-end">
+                                <button type="submit" class="bg-purple-700 hover:bg-purple-800 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2">
+                                    <i class="fa-solid fa-check"></i>
+                                    <span>اعتماد وتوثيق العذر الرسمي</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-2xs">
+                        <div class="p-4 border-b border-slate-100">
+                            <h4 class="text-sm font-black text-navy-900">سجل الأعذار والأذونات المعتمدة</h4>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-xs">
+                                <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold">
+                                    <tr>
+                                        <th class="py-3 px-4">الاسم الرباعي للطالب</th>
+                                        <th class="py-3 px-4">الصف الدراسي</th>
+                                        <th class="py-3 px-4">التاريخ</th>
+                                        <th class="py-3 px-4">نوع العذر</th>
+                                        <th class="py-3 px-4">السبب والملاحظات</th>
+                                        <th class="py-3 px-4">المُعتمد</th>
+                                        <th class="py-3 px-4 text-left">حذف</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mgr-excuses-tbody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 8: INSTANT APPRECIATION & EXCELLENCE CERTIFICATES -->
+                <div id="mgr-tab-certificates" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-4 no-print">
+                        <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                            <i class="fa-solid fa-award text-gold-600"></i>
+                            <span>إصدار وطباعة شهادة تقدير وتفوق فورية</span>
+                        </h3>
+                        <form onsubmit="generateAppreciationCertificate(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">اختر الطالب من الكشف *</label>
+                                <select id="cert-student-code" onchange="autoFillCertGrade()" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold"></select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">الصف الدراسي</label>
+                                <input type="text" id="cert-student-grade" readonly class="w-full rounded-xl border border-slate-200 bg-slate-100 px-3 py-2.5 text-xs font-black text-navy-900">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">تاريخ الإصدار *</label>
+                                <input type="date" id="cert-date" required class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">سبب التكريم *</label>
+                                <select id="cert-reason-select" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                    <option value="التفوق الدراسي المتميز والحصول على أعلى الدرجات">التفوق الدراسي المتميز والحصول على أعلى الدرجات</option>
+                                    <option value="الانضباط السلوكي والالتزام بالأخلاق الحميدة">الانضباط السلوكي والالتزام بالأخلاق الحميدة</option>
+                                    <option value="اختياره الطالب المثالي للأسبوع">اختياره الطالب المثالي للأسبوع</option>
+                                    <option value="التميز والإبداع في الأنشطة المدرسية والإذاعة">التميز والإبداع في الأنشطة المدرسية والإذاعة</option>
+                                </select>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">ملاحظة إضافية مخصصة (اختياري)</label>
+                                <input type="text" id="cert-custom-note" placeholder="مثال: مع أطيب التمنيات بدوام النجاح والتفوق" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                            </div>
+                            <div class="sm:col-span-2 lg:col-span-4 flex justify-end gap-2">
+                                <button type="submit" class="bg-navy-900 hover:bg-navy-800 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2">
+                                    <i class="fa-solid fa-certificate text-gold-400"></i>
+                                    <span>تصميم ومعاينة الشهادة</span>
+                                </button>
+                                <button type="button" onclick="window.print()" class="bg-gold-500 hover:bg-gold-600 text-navy-950 font-black px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2">
+                                    <i class="fa-solid fa-print"></i>
+                                    <span>طباعة الشهادة</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="printable-certificate-output" class="bg-white p-6 sm:p-10 rounded-3xl border-4 border-double border-gold-500 shadow-lg">
+                        <p class="text-xs text-slate-400 text-center py-8">اختر الطالب وسبب التكريم ثم اضغط «تصميم ومعاينة الشهادة» لإصدار شهادة تقدير رسمية بترويسة مدرسة الزهراء الخاصة.</p>
+                    </div>
+                </div>
+
+                <!-- TAB 9: OFFICIAL REPORTS & PRINTING -->
+                <div id="mgr-tab-reports" class="hidden space-y-6">
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-4 no-print">
+                        <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                            <i class="fa-solid fa-file-lines text-indigo-600"></i>
+                            <span>إصدار وطباعة التقارير الرسمية للمدرسة</span>
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">نوع التقرير الرسمي *</label>
+                                <select id="report-type-select" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                    <option value="absence">تقرير الغياب اليومي حسب الصف</option>
+                                    <option value="honor">كشف الطلاب المتميزين والمتفوقين</option>
+                                    <option value="negative_behavior">كشف السلوكيات السلبية للمتابعة التربوية</option>
+                                    <option value="roster_internal">كشف الطلاب المسجلين وأكوادهم (للاستخدام الإداري الداخلي)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-extrabold text-slate-700 mb-1">الصف الدراسي</label>
+                                <select id="report-grade-select" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-xs font-bold">
+                                    <option value="ALL">جميع الصفوف</option>
+                                    <option value="KG 1">KG 1</option>
+                                    <option value="KG 2">KG 2</option>
+                                    <option value="الأول الابتدائي">الأول الابتدائي</option>
+                                    <option value="الثاني الابتدائي">الثاني الابتدائي</option>
+                                    <option value="الثالث الابتدائي">الثالث الابتدائي</option>
+                                    <option value="الرابع الابتدائي">الرابع الابتدائي</option>
+                                    <option value="الخامس الابتدائي">الخامس الابتدائي</option>
+                                    <option value="السادس الابتدائي">السادس الابتدائي</option>
+                                    <option value="الأول الإعدادي">الأول الإعدادي</option>
+                                    <option value="الثاني الإعدادي">الثاني الإعدادي</option>
+                                    <option value="الثالث الإعدادي">الثالث الإعدادي</option>
+                                </select>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <button type="button" onclick="generateOfficialReport()" class="flex-1 bg-navy-900 hover:bg-navy-800 text-white font-extrabold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-magnifying-glass text-gold-400"></i>
+                                    <span>عرض التقرير</span>
+                                </button>
+                                <button type="button" onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-print"></i>
+                                    <span>طباعة رسمية</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="printable-report-output" class="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-2xs space-y-4">
+                        <p class="text-xs text-slate-400 text-center py-6">اختر نوع التقرير والصف الدراسي ثم اضغط «عرض التقرير» لتوليد الكشف الرسمي بترويسة مدرسة الزهراء الخاصة الجاهز للطباعة.</p>
+                    </div>
+                </div>
+
+                <!-- TAB 10: TEACHER RECORDS & SECURITY PINS -->
+                <div id="mgr-tab-records" class="hidden space-y-6">
+                    <!-- Security Pins Settings -->
+                    <div class="bg-white p-6 rounded-3xl border border-slate-200/90 shadow-2xs space-y-4">
+                        <h3 class="text-base font-black text-navy-900 flex items-center gap-2">
+                            <i class="fa-solid fa-key text-gold-600"></i>
+                            <span>إعدادات الأمان والأرقام السرية</span>
+                        </h3>
+                        <p class="text-xs text-slate-600 bg-amber-50 border border-amber-200 rounded-xl p-3 font-bold">
+                            <i class="fa-solid fa-circle-info text-gold-600 ml-1"></i>
+                            الرقم السري للإدارة موحّد لدخول كلٍّ من <strong>مدير المدرسة</strong> و<strong>وكيل المدرسة</strong> معاً.
+                        </p>
+                        <form onsubmit="handleUpdateSecurityPins(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-extrabold text-slate-700 mb-1">الرقم السري الموحد للإدارة (المدير والوكيل)</label>
+                                <input type="password" id="sec-new-manager-pin" placeholder="اتركه فارغاً للإبقاء على الحالي" dir="ltr" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm font-mono font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-extrabold text-slate-700 mb-1">الرقم السري لبوابة دخول المدرسين</label>
+                                <input type="password" id="sec-new-teacher-pin" placeholder="اتركه فارغاً للإبقاء على الحالي" dir="ltr" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm font-mono font-bold">
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between gap-2 mb-1">
+                                    <label class="block text-xs font-extrabold text-slate-700">الكود السري لتحويل PDF إلى لعبة</label>
+                                    <span id="sec-current-game-pin-badge" class="text-[11px] font-mono font-black text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-lg" dir="ltr">PLAY2026</span>
+                                </div>
+                                <input type="text" id="sec-new-game-pin" placeholder="اتركه فارغاً للإبقاء على الحالي" dir="ltr" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm font-mono font-bold">
+                            </div>
+                            <div class="sm:col-span-3 flex justify-end">
+                                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2">
+                                    <i class="fa-solid fa-check"></i>
+                                    <span>حفظ وتحديث الأرقام والأكواد السرية</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Review Grades -->
+                    <div class="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-2xs">
+                        <div class="p-4 border-b border-slate-100">
+                            <h4 class="text-sm font-black text-navy-900">مراجعة كافة درجات وتقييمات الطلاب</h4>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-xs">
+                                <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold">
+                                    <tr>
+                                        <th class="py-3 px-4">الطالب</th>
+                                        <th class="py-3 px-4">المادة والتقييم</th>
+                                        <th class="py-3 px-4">الدرجة</th>
+                                        <th class="py-3 px-4">المعلم</th>
+                                        <th class="py-3 px-4 text-left">حذف</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mgr-grades-tbody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Review Attendance & Behavior -->
+                    <div class="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-2xs">
+                        <div class="p-4 border-b border-slate-100">
+                            <h4 class="text-sm font-black text-navy-900">مراجعة كافة سجلات الحضور والغياب والسلوكيات</h4>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-xs">
+                                <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold">
+                                    <tr>
+                                        <th class="py-3 px-4">الطالب</th>
+                                        <th class="py-3 px-4">المادة والتاريخ</th>
+                                        <th class="py-3 px-4">الحضور والسلوك</th>
+                                        <th class="py-3 px-4">المعلم</th>
+                                        <th class="py-3 px-4 text-left">حذف</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mgr-att-tbody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Review Broadcasts -->
+                    <div class="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-2xs">
+                        <div class="p-4 border-b border-slate-100">
+                            <h4 class="text-sm font-black text-navy-900">إدارة الإذاعات المدرسية المعتمدة</h4>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-right text-xs">
+                                <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-extrabold">
+                                    <tr>
+                                        <th class="py-3 px-4">الصف الدراسي</th>
+                                        <th class="py-3 px-4">عنوان الإذاعة المدرسية</th>
+                                        <th class="py-3 px-4">اعتماد الإدارة</th>
+                                        <th class="py-3 px-4 text-left">تعديل / حذف</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mgr-bc-tbody" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- HIDDEN VIEW 4: SECRET PDF-TO-GAME INTERACTIVE LAB (4 GAMES)           -->
+    <!-- ===================================================================== -->
+    <section id="secret-game-view" class="hidden flex-1 py-8 sm:py-12 bg-slate-900 text-white">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 fade-in">
+            <!-- Secret Lab Top Header -->
+            <div class="bg-gradient-to-l from-indigo-950 via-navy-900 to-purple-950 rounded-3xl p-6 border border-gold-500/30 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-400 to-amber-600 text-navy-950 flex items-center justify-center text-2xl shadow-lg shrink-0">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="bg-gold-500/20 text-gold-400 border border-gold-400/30 text-[11px] font-black px-3 py-0.5 rounded-full">وضع الألعاب التعليمية السري</span>
+                            <span id="secret-game-student-badge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[11px] font-bold px-3 py-0.5 rounded-full"></span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-black text-white mt-1">مختبر تحويل المناهج (PDF) إلى 4 ألعاب تفاعلية</h2>
+                        <p class="text-xs text-slate-300 mt-0.5">اختر اللعبة المفضلة لديك وارفع ملف الدرس بصيغة PDF لتحويله فوراً إلى تحدي تفاعلي</p>
+                    </div>
+                </div>
+                <button type="button" onclick="exitSecretGameLab()" class="bg-white/10 hover:bg-white/20 text-white border border-white/20 font-extrabold px-4 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 shrink-0">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>العودة لبوابة الطالب</span>
+                </button>
+            </div>
+
+            <!-- Step 1: Select Game Mode + Upload PDF / Lesson Content Setup -->
+            <div id="pdf-game-setup-card" class="bg-white text-navy-900 rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200 space-y-5">
+                <input type="hidden" id="pdf-game-mode" value="car">
+
+                <div class="space-y-2.5">
+                    <label class="block text-xs font-black text-navy-900">1. اختر اللعبة التعليمية التي تريد اللعب بها:</label>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                        <button type="button" onclick="selectPdfGameModeCard('car')" data-mode="car" class="game-mode-card-btn rounded-2xl border-2 border-indigo-600 bg-indigo-50 p-4 text-right transition shadow-2xs">
+                            <div class="text-2xl mb-1">🏎️</div>
+                            <div class="text-sm font-black text-navy-900">سباق العربيات</div>
+                            <div class="text-[11px] font-bold text-slate-600 mt-0.5">4 حارات وتيربو</div>
+                        </button>
+                        <button type="button" onclick="selectPdfGameModeCard('space')" data-mode="space" class="game-mode-card-btn rounded-2xl border-2 border-slate-200 bg-slate-50 hover:border-indigo-300 p-4 text-right transition">
+                            <div class="text-2xl mb-1">🚀</div>
+                            <div class="text-sm font-black text-navy-900">سفينة الفضاء</div>
+                            <div class="text-[11px] font-bold text-slate-600 mt-0.5">ليزر ونيازك</div>
+                        </button>
+                        <button type="button" onclick="selectPdfGameModeCard('keeper')" data-mode="keeper" class="game-mode-card-btn rounded-2xl border-2 border-slate-200 bg-slate-50 hover:border-indigo-300 p-4 text-right transition">
+                            <div class="text-2xl mb-1">🥅</div>
+                            <div class="text-sm font-black text-navy-900">حارس المرمى</div>
+                            <div class="text-[11px] font-bold text-slate-600 mt-0.5">ضربات جزاء</div>
+                        </button>
+                        <button type="button" onclick="selectPdfGameModeCard('cards')" data-mode="cards" class="game-mode-card-btn rounded-2xl border-2 border-slate-200 bg-slate-50 hover:border-indigo-300 p-4 text-right transition">
+                            <div class="text-2xl mb-1">🃏</div>
+                            <div class="text-sm font-black text-navy-900">البطاقات الذكية</div>
+                            <div class="text-[11px] font-bold text-slate-600 mt-0.5">أسئلة ومؤقت</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-extrabold text-navy-900 mb-1.5">المادة الدراسية *</label>
+                        <select id="pdf-game-subject" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-800">
+                            <option value="العلوم">العلوم</option>
+                            <option value="اكتشف">اكتشف</option>
+                            <option value="الدراسات الاجتماعية">الدراسات الاجتماعية</option>
+                            <option value="اللغة العربية">اللغة العربية</option>
+                            <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                            <option value="الرياضيات">الرياضيات</option>
+                            <option value="التربية الدينية">التربية الدينية</option>
+                            <option value="تكنولوجيا المعلومات">تكنولوجيا المعلومات</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-extrabold text-navy-900 mb-1.5">مستوى السرعة والوقت *</label>
+                        <select id="pdf-game-speed" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm font-bold text-slate-800">
+                            <option value="25">عادي (سرعة متوسطة)</option>
+                            <option value="18">تحدي سريع (تيربو)</option>
+                            <option value="35">تدريب هادئ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- File Upload Box -->
+                <div class="border-2 border-dashed border-indigo-300 bg-indigo-50/50 rounded-2xl p-5 text-center space-y-2.5">
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                        <label for="pdf-file-input" class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-black px-5 py-2.5 rounded-xl text-xs transition inline-flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>أضف الـ PDF من الجهاز</span>
+                        </label>
+                        <input type="file" id="pdf-file-input" accept=".pdf,application/pdf" onchange="handlePdfFileSelected(event)" class="hidden">
+                        <span id="pdf-selected-filename" class="text-xs font-bold text-slate-600">لم يتم اختيار ملف بعد</span>
+                    </div>
+                </div>
+
+                <!-- Optional Extracted / Fallback Lesson Text -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label for="pdf-extracted-text" class="block text-xs font-extrabold text-navy-900">محتوى الدرس المستخرج (أو الصق نص الدرس مباشرة)</label>
+                        <button type="button" onclick="fillSampleLessonForGame()" class="text-[11px] font-extrabold text-indigo-700 hover:underline">
+                            تجربة بنص منهج جاهز
+                        </button>
+                    </div>
+                    <textarea id="pdf-extracted-text" rows="4" placeholder="سيظهر هنا النص المستخرج من ملف PDF تلقائياً، أو يمكنك لصق فقرات الدرس هنا..." class="w-full rounded-2xl border border-slate-300 bg-slate-50 p-3.5 text-xs font-bold text-slate-800 focus:border-indigo-600 focus:bg-white focus:outline-none"></textarea>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="button" onclick="buildAndStartPdfGame()" class="w-full sm:w-auto bg-gradient-to-l from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-black px-8 py-3.5 rounded-2xl text-sm shadow-lg transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-play text-gold-400"></i>
+                        <span>تحويل المنهج إلى لعبة وبدء اللعب</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2A: Arcade Canvas Arena (Car Racing / Space Shooter / Goalkeeper) -->
+            <div id="pdf-arcade-game-card" class="hidden bg-white text-navy-900 rounded-3xl p-5 sm:p-6 shadow-2xl border-2 border-gold-500/50 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <button type="button" onclick="switchActivePdfGameMode('car')" data-switch-mode="car" class="arcade-switch-btn bg-navy-900 text-white text-xs font-black px-3 py-1.5 rounded-xl transition">🏎️ سباق العربيات</button>
+                        <button type="button" onclick="switchActivePdfGameMode('space')" data-switch-mode="space" class="arcade-switch-btn bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-black px-3 py-1.5 rounded-xl transition">🚀 سفينة الفضاء</button>
+                        <button type="button" onclick="switchActivePdfGameMode('keeper')" data-switch-mode="keeper" class="arcade-switch-btn bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-black px-3 py-1.5 rounded-xl transition">🥅 حارس المرمى</button>
+                        <button type="button" onclick="switchActivePdfGameMode('cards')" data-switch-mode="cards" class="arcade-switch-btn bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-black px-3 py-1.5 rounded-xl transition">🃏 البطاقات الذكية</button>
+                    </div>
+                    <button type="button" onclick="useArcadeSmartHint()" class="bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 text-xs font-black px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-lightbulb text-amber-600"></i>
+                        <span>تلميح ذكي</span>
+                    </button>
+                </div>
+
+                <!-- HUD -->
+                <div class="grid grid-cols-4 gap-2.5 bg-navy-950 text-white p-3.5 rounded-2xl text-center">
+                    <div class="bg-white/10 rounded-xl p-2">
+                        <span class="text-[10px] text-gold-400 font-bold block">المرحلة</span>
+                        <span id="arcade-hud-stage" class="text-xs sm:text-sm font-black">1 / 3</span>
+                    </div>
+                    <div class="bg-white/10 rounded-xl p-2">
+                        <span class="text-[10px] text-emerald-300 font-bold block">النقاط</span>
+                        <span id="arcade-hud-score" class="text-sm sm:text-base font-black text-emerald-400">0</span>
+                    </div>
+                    <div class="bg-white/10 rounded-xl p-2">
+                        <span class="text-[10px] text-amber-300 font-bold block">التتابع</span>
+                        <span id="arcade-hud-streak" class="text-xs sm:text-sm font-black text-amber-400">0 🔥</span>
+                    </div>
+                    <div class="bg-rose-500/20 border border-rose-400/30 rounded-xl p-2">
+                        <span class="text-[10px] text-rose-200 font-bold block">المحاولات</span>
+                        <span id="arcade-hud-lives" class="text-xs sm:text-sm font-black">❤️❤️❤️</span>
+                    </div>
+                </div>
+
+                <!-- Question Display -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-1">
+                    <div class="flex items-center justify-between text-[11px] font-extrabold text-slate-500">
+                        <span id="arcade-question-badge" class="text-indigo-700">المرحلة 1</span>
+                        <span id="arcade-question-counter">السؤال 1 من 6</span>
+                    </div>
+                    <h4 id="arcade-question-text" class="text-sm sm:text-base font-black text-navy-900 leading-relaxed"></h4>
+                </div>
+
+                <!-- Interactive HTML5 Canvas -->
+                <div class="relative rounded-2xl overflow-hidden border-2 border-slate-800 bg-slate-900 shadow-inner">
+                    <canvas id="arcade-game-canvas" class="w-full block cursor-pointer select-none" style="height: 390px; touch-action: manipulation;"></canvas>
+                    <div id="arcade-feedback-banner" class="hidden absolute inset-x-4 top-4 rounded-xl p-3 text-center text-xs font-black shadow-lg"></div>
+                </div>
+
+                <!-- Touch & Keyboard Controls -->
+                <div class="flex items-center justify-center gap-3">
+                    <button type="button" onclick="moveArcadeActor(-1)" class="flex-1 sm:flex-none bg-navy-900 hover:bg-navy-800 text-white font-black px-6 py-3 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-arrow-right text-gold-400"></i>
+                        <span>يمين</span>
+                    </button>
+                    <button type="button" id="arcade-action-btn" onclick="triggerArcadeAction()" class="hidden flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-700 text-white font-black px-6 py-3 rounded-xl text-xs transition">
+                        إطلاق الليزر
+                    </button>
+                    <button type="button" onclick="moveArcadeActor(1)" class="flex-1 sm:flex-none bg-navy-900 hover:bg-navy-800 text-white font-black px-6 py-3 rounded-xl text-xs transition flex items-center justify-center gap-1.5">
+                        <span>يسار</span>
+                        <i class="fa-solid fa-arrow-left text-gold-400"></i>
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-between pt-1">
+                    <button type="button" onclick="resetPdfGameToSetup()" class="text-xs font-extrabold text-slate-500 hover:text-rose-600 transition">
+                        <i class="fa-solid fa-rotate-right ml-1"></i>
+                        تغيير ملف الـ PDF أو إعدادات اللعبة
+                    </button>
+                    <span id="arcade-control-hint" class="text-[11px] font-bold text-slate-500">استخدم الأسهم أو اضغط مباشرة على الحارة</span>
+                </div>
+            </div>
+
+            <!-- Step 2B: Quiz Cards Arena (البطاقات الذكية) -->
+            <div id="pdf-game-arena-card" class="hidden bg-white text-navy-900 rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-gold-500/50 space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <button type="button" onclick="switchActivePdfGameMode('car')" class="bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-black px-3 py-1.5 rounded-xl transition">🏎️ سباق العربيات</button>
+                        <button type="button" onclick="switchActivePdfGameMode('space')" class="bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-black px-3 py-1.5 rounded-xl transition">🚀 سفينة الفضاء</button>
+                        <button type="button" onclick="switchActivePdfGameMode('keeper')" class="bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-black px-3 py-1.5 rounded-xl transition">🥅 حارس المرمى</button>
+                        <button type="button" onclick="switchActivePdfGameMode('cards')" class="bg-navy-900 text-white text-xs font-black px-3 py-1.5 rounded-xl transition">🃏 البطاقات الذكية</button>
+                    </div>
+                    <button type="button" onclick="useCardsSmartHint()" class="bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 text-xs font-black px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-lightbulb text-amber-600"></i>
+                        <span>تلميح ذكي</span>
+                    </button>
+                </div>
+
+                <!-- HUD -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 bg-navy-950 text-white p-4 rounded-2xl">
+                    <div class="bg-white/10 rounded-xl p-3 text-center">
+                        <span class="text-[10px] text-gold-400 font-bold block">المرحلة الحالية</span>
+                        <span id="game-hud-stage" class="text-sm font-black">المرحلة 1 / 3</span>
+                    </div>
+                    <div class="bg-white/10 rounded-xl p-3 text-center">
+                        <span class="text-[10px] text-sky-300 font-bold block">المستوى</span>
+                        <span id="game-hud-level" class="text-sm font-black">تمهيدي</span>
+                    </div>
+                    <div class="bg-white/10 rounded-xl p-3 text-center">
+                        <span class="text-[10px] text-emerald-300 font-bold block">النقاط</span>
+                        <span id="game-hud-score" class="text-base font-black text-emerald-400">0</span>
+                    </div>
+                    <div class="bg-white/10 rounded-xl p-3 text-center">
+                        <span class="text-[10px] text-amber-300 font-bold block">سلسلة التفوق</span>
+                        <span id="game-hud-streak" class="text-sm font-black text-amber-400">0 🔥</span>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1 bg-rose-500/20 border border-rose-400/40 rounded-xl p-3 text-center">
+                        <span class="text-[10px] text-rose-200 font-bold block">الوقت المتبقي</span>
+                        <span id="game-hud-timer" class="text-base font-mono font-black text-rose-300">25s</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between text-xs font-extrabold text-slate-600">
+                        <span id="game-question-counter">السؤال 1 من 9</span>
+                        <span id="game-subject-label" class="text-indigo-700"></span>
+                    </div>
+                    <div class="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+                        <div id="game-progress-bar" class="h-full bg-gradient-to-l from-gold-500 to-emerald-500 transition-all duration-300" style="width: 10%"></div>
+                    </div>
+                </div>
+
+                <!-- Question Box -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4">
+                    <span id="game-question-type-badge" class="inline-block bg-indigo-100 text-indigo-800 text-[11px] font-black px-3 py-1 rounded-full">سؤال المرحلة</span>
+                    <h4 id="game-question-text" class="text-base sm:text-lg font-black text-navy-900 leading-relaxed"></h4>
+                    <div id="game-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2"></div>
+                </div>
+
+                <!-- Instant Feedback Banner -->
+                <div id="game-feedback-banner" class="hidden rounded-2xl p-4 text-xs font-black flex items-center justify-between gap-3"></div>
+
+                <div class="flex items-center justify-between pt-2">
+                    <button type="button" onclick="resetPdfGameToSetup()" class="text-xs font-extrabold text-slate-500 hover:text-rose-600 transition">
+                        <i class="fa-solid fa-rotate-right ml-1"></i>
+                        تغيير ملف الـ PDF
+                    </button>
+                    <button type="button" id="game-next-btn" onclick="nextPdfGameQuestion()" class="hidden bg-navy-900 hover:bg-navy-800 text-white font-black px-6 py-2.5 rounded-xl text-xs transition flex items-center gap-2">
+                        <span>السؤال التالي</span>
+                        <i class="fa-solid fa-arrow-left text-gold-400"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Final Victory Summary -->
+            <div id="pdf-game-summary-card" class="hidden bg-white text-navy-900 rounded-3xl p-8 shadow-2xl border-2 border-gold-500 text-center space-y-5">
+                <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-gold-400 to-amber-600 text-navy-950 flex items-center justify-center mx-auto text-4xl shadow-lg">
+                    <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div class="space-y-1">
+                    <h3 id="game-summary-title" class="text-2xl font-black text-navy-900">أحسنت! أتممت جميع مراحل اللعبة بنجاح</h3>
+                    <p id="game-summary-subtitle" class="text-sm font-bold text-slate-600"></p>
+                </div>
+                <div class="grid grid-cols-3 gap-3 max-w-lg mx-auto">
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4">
+                        <span class="text-[11px] font-bold text-emerald-700 block">مجموع النقاط</span>
+                        <span id="game-final-score" class="text-2xl font-black text-emerald-900">0</span>
+                    </div>
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-4">
+                        <span class="text-[11px] font-bold text-indigo-700 block">الإجابات الصحيحة</span>
+                        <span id="game-final-correct" class="text-2xl font-black text-indigo-900">0 / 0</span>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+                        <span class="text-[11px] font-bold text-amber-700 block">التقدير</span>
+                        <span id="game-final-rank" class="text-lg font-black text-amber-900">بطل متفوق</span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+                    <button type="button" onclick="replayCurrentPdfGame()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-6 py-3 rounded-xl text-xs transition flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>إعادة تحدي نفس الدرس</span>
+                    </button>
+                    <button type="button" onclick="resetPdfGameToSetup()" class="bg-navy-900 hover:bg-navy-800 text-white font-black px-6 py-3 rounded-xl text-xs transition flex items-center gap-2">
+                        <i class="fa-solid fa-file-pdf text-gold-400"></i>
+                        <span>رفع ملف PDF جديد</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- FOOTER                                                                -->
+    <!-- ===================================================================== -->
+    <footer class="bg-navy-950 text-slate-300 border-t border-white/10 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-gold-500 text-navy-950 flex items-center justify-center">
+                        <i class="fa-solid fa-school"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-black text-white">مدرسة الزهراء الخاصة</h3>
+                        <p class="text-[11px] text-slate-400">من رياض الأطفال KG 1 وحتى الثالث الإعدادي</p>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-400">© 2026 مدرسة الزهراء الخاصة — جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PDF.js & Tesseract.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+    <!-- ===================================================================== -->
+    <!-- JAVASCRIPT LOGIC & STATE MANAGEMENT                                   -->
+    <!-- ===================================================================== -->
+    <script>
+        const STORAGE_KEY = 'alzahraa_school_portal_v9';
+        const DEFAULT_TEACHER_PIN = '202699';
+        const DEFAULT_MANAGER_PIN = 'Zahraa@2026';
+        const DEFAULT_GAME_PIN = 'PLAY2026';
+        const TODAY_ISO = new Date().toISOString().split('T')[0];
+
+        if (window.pdfjsLib) {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        const ALL_SCHOOL_GRADES = [
+            'KG 1', 'KG 2',
+            'الأول الابتدائي', 'الثاني الابتدائي', 'الثالث الابتدائي',
+            'الرابع الابتدائي', 'الخامس الابتدائي', 'السادس الابتدائي',
+            'الأول الإعدادي', 'الثاني الإعدادي', 'الثالث الإعدادي'
+        ];
+
+        const CORE_STUDENTS = [
+            { code: '342802591', name: 'آدم حسني محمد', grade: 'الرابع الابتدائي' },
+            { code: '341016455', name: 'سفيان إبراهيم إسماعيل', grade: 'الرابع الابتدائي' },
+            { code: '341838923', name: 'إياد عصام عطيه', grade: 'الرابع الابتدائي' },
+            { code: '341939379', name: 'أحمد علي محمد', grade: 'الرابع الابتدائي' }
+        ];
+
+        const DEFAULT_STATE = {
+            students: [...CORE_STUDENTS],
+            grades: [
+                {
+                    id: 'grd-1',
+                    studentCode: '342802591',
+                    subject: 'اللغة العربية',
+                    type: 'اختبار أسبوعي',
+                    title: 'تقييم القراءة والنحو',
+                    score: 9.5,
+                    maxScore: 10,
+                    status: 'ممتاز ومكتمل',
+                    teacherName: 'أ. محمود عبد الرحمن',
+                    date: TODAY_ISO
+                },
+                {
+                    id: 'grd-2',
+                    studentCode: '341016455',
+                    subject: 'الرياضيات',
+                    type: 'واجب منزلي',
+                    title: 'تمارين الكسور والأعداد',
+                    score: 10,
+                    maxScore: 10,
+                    status: 'ممتاز ومكتمل',
+                    teacherName: 'أ. سارة السيد',
+                    date: TODAY_ISO
+                }
+            ],
+            attendance: [
+                {
+                    id: 'att-1',
+                    studentCode: '342802591',
+                    subject: 'اللغة العربية',
+                    date: TODAY_ISO,
+                    status: 'present',
+                    behaviorType: 'positive',
+                    behaviorNote: 'مشاركة متميزة والتزام كامل داخل الحصة',
+                    teacherName: 'أ. محمود عبد الرحمن'
+                },
+                {
+                    id: 'att-2',
+                    studentCode: '341838923',
+                    subject: 'العلوم',
+                    date: TODAY_ISO,
+                    status: 'present',
+                    behaviorType: 'positive',
+                    behaviorNote: 'تفاعل ممتاز في التجارب العلمية',
+                    teacherName: 'أ. هبة مصطفى'
+                }
+            ],
+            stars: [
+                {
+                    id: 'star-1',
+                    studentCode: '342802591',
+                    subject: 'اللغة العربية',
+                    reason: 'التفوق الدراسي والانضباط السلوكي طوال الأسبوع',
+                    date: TODAY_ISO,
+                    teacherName: 'أ. محمود عبد الرحمن'
+                },
+                {
+                    id: 'star-2',
+                    studentCode: '341016455',
+                    subject: 'الرياضيات',
+                    reason: 'الدقة والتميز في حل المسائل الحسابية والواجبات',
+                    date: TODAY_ISO,
+                    teacherName: 'أ. سارة السيد'
+                }
+            ],
+            poems: [
+                {
+                    id: 'poem-1',
+                    author: 'آدم حسني محمد',
+                    grade: 'الرابع الابتدائي',
+                    title: 'مدرستي الزهراء',
+                    content: 'في مدرستي يشرق نور العلم والأدب\nنخطو معاً نحو العلا والجد والطلب',
+                    approved: true,
+                    date: TODAY_ISO
+                }
+            ],
+            broadcasts: [
+                {
+                    id: 'bc-1',
+                    grade: 'الرابع الابتدائي',
+                    topic: 'حب الوطن والانتماء — إشراف إدارة مدرسة الزهراء الخاصة',
+                    approvedBy: 'إدارة المدرسة'
+                },
+                {
+                    id: 'bc-2',
+                    grade: 'السادس الابتدائي',
+                    topic: 'النظام والانضباط مفتاح النجاح والتفوق',
+                    approvedBy: 'إدارة المدرسة'
+                }
+            ],
+            announcements: [
+                {
+                    id: 'ann-1',
+                    title: 'ترحيب ببداية العام الدراسي الجديد',
+                    body: 'ترحب إدارة مدرسة الزهراء الخاصة بأبنائها الطلاب وأولياء الأمور الكرام، مع تمنياتنا بعام دراسي حافل بالتفوق والنجاح.',
+                    priority: 'important',
+                    date: TODAY_ISO
+                }
+            ],
+            parentAlerts: {},
+            parentMessages: [],
+            schedules: [],
+            excuses: [],
+            teacherActivity: [],
+            gradingLocked: false,
+            securityPins: {
+                teacherPin: DEFAULT_TEACHER_PIN,
+                managerPin: DEFAULT_MANAGER_PIN,
+                gamePin: DEFAULT_GAME_PIN
+            }
+        };
+
+        let state = loadState();
+        let currentTeacherSession = null;
+        let currentAdminSession = null;
+        let activeSecretStudent = null;
+        let pendingPdfRosterRows = [];
+        let pendingOcrGradeRows = [];
+
+        // Game Runtime State
+        let pdfGameState = {
+            mode: 'car',
+            questions: [],
+            currentIndex: 0,
+            score: 0,
+            streak: 0,
+            correctCount: 0,
+            secondsPerQuestion: 25,
+            timeLeft: 25,
+            timerInterval: null,
+            answered: false,
+            hintUsed: false,
+            subject: 'العلوم'
+        };
+
+        let arcadeEngine = {
+            rafId: null,
+            slotCount: 4,
+            selectedSlot: 1,
+            visualX: 0,
+            dropY: -75,
+            baseSpeed: 1.4,
+            scrollOffset: 0,
+            turboTimer: 0,
+            shakeTimer: 0,
+            lives: 3,
+            roundResolved: false,
+            hintLitSlot: -1,
+            particles: [],
+            lasers: [],
+            ballState: null,
+            stars: [],
+            nextQuestionTimeout: null
+        };
+
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    const mergedStudents = [...CORE_STUDENTS];
+                    if (Array.isArray(parsed.students)) {
+                        parsed.students.forEach(st => {
+                            if (!mergedStudents.some(c => String(c.code) === String(st.code))) {
+                                mergedStudents.push(st);
+                            }
+                        });
+                    }
+                    return {
+                        students: mergedStudents,
+                        grades: Array.isArray(parsed.grades) ? parsed.grades : DEFAULT_STATE.grades,
+                        attendance: Array.isArray(parsed.attendance) ? parsed.attendance : DEFAULT_STATE.attendance,
+                        stars: Array.isArray(parsed.stars) ? parsed.stars : DEFAULT_STATE.stars,
+                        poems: Array.isArray(parsed.poems) ? parsed.poems : DEFAULT_STATE.poems,
+                        broadcasts: Array.isArray(parsed.broadcasts) ? parsed.broadcasts : DEFAULT_STATE.broadcasts,
+                        announcements: Array.isArray(parsed.announcements) ? parsed.announcements : DEFAULT_STATE.announcements,
+                        parentAlerts: parsed.parentAlerts && typeof parsed.parentAlerts === 'object' ? parsed.parentAlerts : {},
+                        parentMessages: Array.isArray(parsed.parentMessages) ? parsed.parentMessages : [],
+                        schedules: Array.isArray(parsed.schedules) ? parsed.schedules : [],
+                        excuses: Array.isArray(parsed.excuses) ? parsed.excuses : [],
+                        teacherActivity: Array.isArray(parsed.teacherActivity) ? parsed.teacherActivity : [],
+                        gradingLocked: Boolean(parsed.gradingLocked),
+                        securityPins: {
+                            teacherPin: (parsed.securityPins && parsed.securityPins.teacherPin) || DEFAULT_TEACHER_PIN,
+                            managerPin: (parsed.securityPins && parsed.securityPins.managerPin) || DEFAULT_MANAGER_PIN,
+                            gamePin: (parsed.securityPins && parsed.securityPins.gamePin) || DEFAULT_GAME_PIN
+                        }
+                    };
+                }
+            } catch (err) {
+                console.error('State load error:', err);
+            }
+            return JSON.parse(JSON.stringify(DEFAULT_STATE));
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (err) {
+                console.error('State save error:', err);
+            }
+        }
+
+        function getSecretGamePin() {
+            return (state.securityPins && state.securityPins.gamePin) || DEFAULT_GAME_PIN;
+        }
+
+        function normalizeArabicText(str) {
+            return String(str || '')
+                .trim()
+                .replace(/\s+/g, ' ')
+                .replace(/[أإآ]/g, 'ا')
+                .replace(/ى/g, 'ي')
+                .replace(/ة/g, 'ه');
+        }
+
+        function escapeHTML(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getStudentByCode(code) {
+            return state.students.find(s => String(s.code).trim() === String(code).trim()) || null;
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            const bgClass = type === 'error' ? 'bg-rose-600 text-white' : 'bg-navy-900 text-white border border-gold-500/40';
+            const iconClass = type === 'error' ? 'fa-circle-exclamation text-rose-200' : 'fa-circle-check text-gold-400';
+            toast.className = `${bgClass} px-4 py-3 rounded-2xl shadow-xl text-xs font-extrabold flex items-center gap-2.5 fade-in pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid ${iconClass} text-base"></i><span>${escapeHTML(message)}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // =========================================================================
+        // MAIN VIEW SWITCHING
+        // =========================================================================
+        function switchMainView(viewName) {
+            stopPdfGameTimer();
+            const views = ['public-view', 'teacher-view', 'manager-view', 'secret-game-view'];
+            views.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+
+            const navBtns = ['public', 'teacher', 'manager'];
+            navBtns.forEach(key => {
+                const btn = document.getElementById(`nav-btn-${key}`);
+                if (!btn) return;
+                if (key === viewName) {
+                    btn.className = 'px-4 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-gold-500 text-navy-950 shadow-sm transition flex items-center gap-2';
+                } else {
+                    btn.className = 'px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-white/10 hover:bg-white/20 text-white border border-white/15 transition flex items-center gap-2';
+                }
+            });
+
+            const target = document.getElementById(`${viewName}-view`);
+            if (target) target.classList.remove('hidden');
+
+            if (viewName === 'public') {
+                renderPublicLanding();
+            } else if (viewName === 'teacher' && currentTeacherSession) {
+                refreshTeacherDashboard();
+            } else if (viewName === 'manager' && currentAdminSession) {
+                refreshManagerDashboard();
+            }
+        }
+
+        // =========================================================================
+        // PUBLIC LANDING RENDERING & POETRY OASIS
+        // =========================================================================
+        function renderPublicLanding() {
+            const topGradeEl = document.getElementById('top-broadcast-grade');
+            const topTopicEl = document.getElementById('top-broadcast-topic');
+            const topMetaEl = document.getElementById('top-broadcast-meta');
+
+            if (topGradeEl && topTopicEl && topMetaEl) {
+                if (state.broadcasts.length > 0) {
+                    const topBc = state.broadcasts[0];
+                    topGradeEl.textContent = `إذاعة الصف: ${topBc.grade}`;
+                    topTopicEl.textContent = topBc.topic;
+                    topMetaEl.innerHTML = `
+                        <span class="text-gold-400 font-bold"><i class="fa-solid fa-circle-check ml-1"></i>معتمدة من إدارة المدرسة</span>
+                        <span class="text-slate-300">طابور الصباح</span>
+                    `;
+                } else {
+                    topGradeEl.textContent = 'لم يتم تحديد إذاعة مدرسية بعد';
+                    topTopicEl.textContent = 'تقوم إدارة مدرسة الزهراء الخاصة بتحديد الإذاعة المدرسية المعتمدة لكل صف.';
+                    topMetaEl.innerHTML = '';
+                }
+            }
+
+            const annContainer = document.getElementById('public-announcements-list');
+            if (annContainer) {
+                if (state.announcements.length === 0) {
+                    annContainer.innerHTML = `<p class="text-xs text-slate-400">لا توجد إعلانات إدارية منشورة حالياً.</p>`;
+                } else {
+                    annContainer.innerHTML = state.announcements.map(ann => {
+                        const badgeMap = {
+                            urgent: { label: 'عاجل جداً', cls: 'bg-rose-100 text-rose-800 border-rose-200' },
+                            important: { label: 'هام', cls: 'bg-amber-100 text-amber-800 border-amber-200' },
+                            normal: { label: 'إعلان عام', cls: 'bg-slate-100 text-slate-700 border-slate-200' }
+                        };
+                        const badge = badgeMap[ann.priority] || badgeMap.normal;
+                        return `
+                            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="text-[11px] font-black px-2.5 py-0.5 rounded-full border ${badge.cls}">${badge.label}</span>
+                                        <h4 class="text-sm font-black text-navy-900">${escapeHTML(ann.title)}</h4>
+                                    </div>
+                                    <p class="text-xs text-slate-600 leading-relaxed">${escapeHTML(ann.body)}</p>
+                                </div>
+                                <span class="text-[11px] font-mono font-bold text-slate-400 shrink-0">${escapeHTML(ann.date || '')}</span>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }
+
+            const starsGrid = document.getElementById('public-stars-grid');
+            if (starsGrid) {
+                if (state.stars.length === 0) {
+                    starsGrid.innerHTML = `<p class="text-xs text-slate-400 col-span-full">لم يتم ترشيح طلاب متميزين بعد.</p>`;
+                } else {
+                    starsGrid.innerHTML = state.stars.map(star => {
+                        const st = getStudentByCode(star.studentCode);
+                        const stName = st ? st.name : 'طالب متميز';
+                        const stGrade = st ? st.grade : '';
+                        return `
+                            <div class="bg-white rounded-3xl p-5 border border-gold-500/30 shadow-2xs space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="bg-gold-500/20 text-gold-700 text-[11px] font-black px-3 py-1 rounded-full">
+                                        <i class="fa-solid fa-star ml-1"></i>${escapeHTML(star.subject)}
+                                    </span>
+                                    <span class="text-[11px] font-bold text-slate-400">${escapeHTML(stGrade)}</span>
+                                </div>
+                                <h4 class="text-base font-black text-navy-900">${escapeHTML(stName)}</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed">${escapeHTML(star.reason)}</p>
+                                <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-bold">
+                                    <span>ترشيح: ${escapeHTML(star.teacherName)}</span>
+                                    <span>${escapeHTML(star.date || '')}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }
+
+            const poemsGrid = document.getElementById('public-poems-grid');
+            if (poemsGrid) {
+                const approvedPoems = state.poems.filter(p => p.approved);
+                if (approvedPoems.length === 0) {
+                    poemsGrid.innerHTML = `<p class="text-xs text-slate-400 col-span-full bg-white p-6 rounded-3xl border border-slate-200">لا توجد قصائد منشورة حالياً. كن أول من يشارك بإبداعه!</p>`;
+                } else {
+                    poemsGrid.innerHTML = approvedPoems.map(p => `
+                        <div class="bg-white rounded-3xl p-5 border border-purple-200 shadow-2xs space-y-2.5">
+                            <div class="flex items-center justify-between">
+                                <span class="bg-purple-100 text-purple-800 text-[11px] font-black px-3 py-0.5 rounded-full">${escapeHTML(p.grade)}</span>
+                                <span class="text-[11px] font-mono text-slate-400">${escapeHTML(p.date || '')}</span>
+                            </div>
+                            <h4 class="text-sm font-black text-navy-900">${escapeHTML(p.title)}</h4>
+                            <p class="text-xs text-slate-700 whitespace-pre-line leading-relaxed bg-purple-50/50 p-3 rounded-2xl">${escapeHTML(p.content)}</p>
+                            <p class="text-[11px] font-extrabold text-purple-800">بقلم الطالب: ${escapeHTML(p.author)}</p>
+                        </div>
+                    `).join('');
+                }
+            }
+
+            const bcList = document.getElementById('public-broadcasts-list');
+            if (bcList) {
+                if (state.broadcasts.length === 0) {
+                    bcList.innerHTML = `<p class="text-xs text-slate-400 col-span-full">لا توجد إذاعات مدرسية مجدولة حالياً.</p>`;
+                } else {
+                    bcList.innerHTML = state.broadcasts.map(bc => `
+                        <div class="bg-white rounded-3xl p-5 border border-slate-200/90 shadow-2xs space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="bg-indigo-100 text-indigo-800 text-xs font-black px-3 py-1 rounded-full">${escapeHTML(bc.grade)}</span>
+                                <span class="text-[11px] font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">معتمدة إدارياً</span>
+                            </div>
+                            <h4 class="text-sm font-black text-navy-900 leading-relaxed">${escapeHTML(bc.topic)}</h4>
+                            <p class="text-[11px] text-slate-500 font-bold">اعتماد: ${escapeHTML(bc.approvedBy || 'إدارة المدرسة')}</p>
+                        </div>
+                    `).join('');
+                }
+            }
+        }
+
+        function handleSubmitStudentPoem(e) {
+            e.preventDefault();
+            const author = document.getElementById('poem-author').value.trim();
+            const grade = document.getElementById('poem-grade').value;
+            const title = document.getElementById('poem-title').value.trim();
+            const content = document.getElementById('poem-content').value.trim();
+            if (!author || !title || !content) return;
+
+            state.poems.unshift({
+                id: 'poem-' + Date.now(),
+                author,
+                grade,
+                title,
+                content,
+                approved: false,
+                date: TODAY_ISO
+            });
+            saveState();
+            document.getElementById('poem-author').value = '';
+            document.getElementById('poem-title').value = '';
+            document.getElementById('poem-content').value = '';
+            showToast('تم إرسال قصيدتك لإدارة المدرسة للمراجعة والنشر');
+        }
+
+        // =========================================================================
+        // STUDENT CODE LOOKUP & PARENT INQUIRY
+        // =========================================================================
+        function handleStudentCodeRegistration(e) {
+            e.preventDefault();
+            const fullNameInput = document.getElementById('reg-student-fullname').value.trim();
+            const gradeInput = document.getElementById('reg-student-grade').value;
+            const resultBox = document.getElementById('student-code-result');
+
+            if (!fullNameInput) return;
+
+            const normInput = normalizeArabicText(fullNameInput);
+            const matchedStudent = state.students.find(st =>
+                normalizeArabicText(st.name) === normInput && st.grade === gradeInput
+            ) || state.students.find(st => normalizeArabicText(st.name) === normInput);
+
+            if (matchedStudent) {
+                resultBox.innerHTML = `
+                    <div class="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-300 space-y-2 fade-in">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-black text-emerald-800"><i class="fa-solid fa-circle-check ml-1"></i>تم العثور على بيانات الطالب</span>
+                            <span class="text-[11px] font-bold bg-white text-emerald-800 px-2.5 py-0.5 rounded-full border border-emerald-200">${escapeHTML(matchedStudent.grade)}</span>
+                        </div>
+                        <p class="text-sm font-black text-navy-900">${escapeHTML(matchedStudent.name)}</p>
+                        <div class="bg-white rounded-xl p-3 border border-emerald-200 flex items-center justify-between">
+                            <span class="text-xs font-extrabold text-slate-600">كود الطالب الخاص بك:</span>
+                            <span class="text-base font-mono font-black text-navy-950 tracking-wider select-all" dir="ltr">${escapeHTML(matchedStudent.code)}</span>
+                        </div>
+                    </div>
+                `;
+                showToast('تم إظهار كود الطالب الخاص بك بنجاح');
+            } else {
+                resultBox.innerHTML = `
+                    <div class="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-amber-950 text-xs font-bold space-y-1 fade-in">
+                        <p class="font-black"><i class="fa-solid fa-circle-info ml-1 text-amber-600"></i>الاسم غير مدرج بالكشف حالياً</p>
+                        <p>تأكد من كتابة الاسم الرباعي صحيحاً واختيار الصف الدراسي المطابق، أو تواصل مع شؤون الطلاب بإدارة المدرسة لإضافتك للكشف.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function handleStudentInquiry(e) {
+            e.preventDefault();
+            const subject = document.getElementById('inquiry-subject').value;
+            const rawCode = document.getElementById('inquiry-code').value.trim();
+            const resultBox = document.getElementById('student-inquiry-result');
+
+            if (!rawCode) return;
+
+            if (rawCode.toUpperCase() === getSecretGamePin().toUpperCase()) {
+                const typedName = document.getElementById('reg-student-fullname').value.trim();
+                activeSecretStudent = {
+                    name: typedName || 'بطل مدرسة الزهراء',
+                    subject: subject
+                };
+                openSecretGameLab();
+                return;
+            }
+
+            const student = getStudentByCode(rawCode);
+            if (!student) {
+                resultBox.innerHTML = `
+                    <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold fade-in">
+                        <i class="fa-solid fa-triangle-exclamation ml-1"></i>
+                        كود الطالب غير صحيح. يرجى التحقق من الكود أو استخراجه أولاً باستخدام الاسم الرباعي.
+                    </div>
+                `;
+                return;
+            }
+
+            const studentGrades = state.grades.filter(g => g.studentCode === student.code && g.subject === subject);
+            const studentAtt = state.attendance.filter(a => a.studentCode === student.code && a.subject === subject);
+            const targetedAlert = state.parentAlerts[student.code];
+            const gradeSchedules = state.schedules.filter(s => s.grade === student.grade);
+            const parentReplies = state.parentMessages.filter(m => m.studentCode === student.code);
+
+            let alertHtml = '';
+            if (targetedAlert) {
+                alertHtml = `
+                    <div class="p-4 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-950 space-y-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-black text-rose-700"><i class="fa-solid fa-bell ml-1"></i>تنبيه خاص من إدارة المدرسة</span>
+                            <span class="text-[10px] font-mono text-rose-500">${escapeHTML(targetedAlert.date || '')}</span>
+                        </div>
+                        <p class="text-xs font-extrabold">${escapeHTML(targetedAlert.message)}</p>
+                    </div>
+                `;
+            }
+
+            const gradesHtml = studentGrades.length === 0
+                ? `<p class="text-xs text-slate-400">لا توجد درجات مرصودة في مادة ${escapeHTML(subject)} حتى الآن.</p>`
+                : studentGrades.map(g => `
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-2">
+                        <div>
+                            <p class="text-xs font-black text-navy-900">${escapeHTML(g.title)} <span class="text-[10px] font-bold text-slate-500">(${escapeHTML(g.type)})</span></p>
+                            <p class="text-[11px] text-emerald-700 font-bold">${escapeHTML(g.status)} — ${escapeHTML(g.teacherName)}</p>
+                        </div>
+                        <span class="bg-navy-900 text-gold-400 font-mono font-black text-xs px-3 py-1 rounded-lg" dir="ltr">${g.score} / ${g.maxScore}</span>
+                    </div>
+                `).join('');
+
+            const attHtml = studentAtt.length === 0
+                ? `<p class="text-xs text-slate-400">لا توجد سجلات حضور أو سلوك في مادة ${escapeHTML(subject)} حتى الآن.</p>`
+                : studentAtt.map(a => {
+                    const excuse = state.excuses.find(ex => ex.studentCode === student.code && ex.date === a.date);
+                    let statusBadge = a.status === 'present'
+                        ? `<span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full text-[10px] font-black">حاضر ✓</span>`
+                        : (excuse
+                            ? `<span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full text-[10px] font-black">غياب بعذر رسمي مقبول (${escapeHTML(excuse.type)})</span>`
+                            : `<span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded-full text-[10px] font-black">غائب بدون عذر ✕</span>`);
+                    const behBadge = a.behaviorType === 'positive'
+                        ? `<span class="text-emerald-700 font-bold">سلوك إيجابي: ${escapeHTML(a.behaviorNote)}</span>`
+                        : `<span class="text-rose-700 font-bold">ملاحظة سلوكية: ${escapeHTML(a.behaviorNote)}</span>`;
+                    return `
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1 text-xs">
+                            <div class="flex items-center justify-between">
+                                <span class="font-mono font-bold text-slate-500">${escapeHTML(a.date)}</span>
+                                ${statusBadge}
+                            </div>
+                            <p>${behBadge}</p>
+                        </div>
+                    `;
+                }).join('');
+
+            const schedulesHtml = gradeSchedules.length === 0 ? '' : `
+                <div class="space-y-2 pt-2 border-t border-slate-100">
+                    <h5 class="text-xs font-black text-teal-800"><i class="fa-solid fa-calendar-days ml-1"></i>الجداول المعتمدة للصف (${escapeHTML(student.grade)})</h5>
+                    ${gradeSchedules.map(sch => `
+                        <div class="p-3 rounded-xl bg-teal-50/60 border border-teal-200 space-y-2">
+                            <p class="text-xs font-black text-teal-950">${escapeHTML(sch.type)}: ${escapeHTML(sch.title)}</p>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-right text-[11px]">
+                                    <thead><tr class="text-teal-800 border-b border-teal-200"><th class="py-1">اليوم/التاريخ</th><th class="py-1">المادة</th><th class="py-1">التوقيت</th><th class="py-1">ملاحظات</th></tr></thead>
+                                    <tbody>
+                                        ${sch.rows.map(r => `<tr class="border-b border-teal-100/70"><td class="py-1 font-bold">${escapeHTML(r.day)}</td><td class="py-1 font-black">${escapeHTML(r.subject)}</td><td class="py-1">${escapeHTML(r.time)}</td><td class="py-1 text-slate-600">${escapeHTML(r.note)}</td></tr>`).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            const repliesHtml = parentReplies.length === 0 ? '' : `
+                <div class="space-y-2 pt-2 border-t border-slate-100">
+                    <h5 class="text-xs font-black text-sky-800"><i class="fa-solid fa-comments ml-1"></i>رسائلك السابقة وردود إدارة المدرسة</h5>
+                    ${parentReplies.map(m => `
+                        <div class="p-3 rounded-xl bg-sky-50/70 border border-sky-200 space-y-1.5 text-xs">
+                            <p class="font-bold text-slate-800">رسالتك (${escapeHTML(m.topic)}): ${escapeHTML(m.body)}</p>
+                            ${m.adminReply
+                                ? `<p class="p-2 rounded-lg bg-white border border-sky-200 text-navy-900 font-black"><i class="fa-solid fa-reply text-emerald-600 ml-1"></i>رد الإدارة: ${escapeHTML(m.adminReply)}</p>`
+                                : `<p class="text-[11px] text-amber-700 font-bold">قيد المراجعة من إدارة المدرسة...</p>`}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            resultBox.innerHTML = `
+                <div class="p-5 rounded-2xl bg-white border-2 border-navy-900/15 space-y-4 fade-in">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                        <div>
+                            <h4 class="text-base font-black text-navy-900">${escapeHTML(student.name)}</h4>
+                            <p class="text-xs text-slate-500 font-bold">${escapeHTML(student.grade)} — مادة ${escapeHTML(subject)}</p>
+                        </div>
+                        <span class="bg-navy-900 text-gold-400 text-xs font-black px-3 py-1 rounded-full">تقرير المتابعة</span>
+                    </div>
+                    ${alertHtml}
+                    <div class="space-y-2">
+                        <h5 class="text-xs font-black text-navy-900"><i class="fa-solid fa-file-pen text-emerald-600 ml-1"></i>الدرجات والتقييمات</h5>
+                        ${gradesHtml}
+                    </div>
+                    <div class="space-y-2">
+                        <h5 class="text-xs font-black text-navy-900"><i class="fa-solid fa-clipboard-user text-amber-600 ml-1"></i>الحضور والغياب والسلوك</h5>
+                        ${attHtml}
+                    </div>
+                    ${schedulesHtml}
+                    ${repliesHtml}
+                    <form onsubmit="handleParentSendMessage(event, '${escapeHTML(student.code)}')" class="pt-3 border-t border-slate-200 space-y-2.5">
+                        <h5 class="text-xs font-black text-navy-900"><i class="fa-solid fa-paper-plane text-sky-600 ml-1"></i>إرسال استفسار أو طلب مقابلة لإدارة المدرسة</h5>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <input type="text" id="parent-msg-sender" required placeholder="اسم ولي الأمر" class="rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-bold">
+                            <select id="parent-msg-topic" class="rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-bold">
+                                <option value="استفسار أكاديمي">استفسار أكاديمي</option>
+                                <option value="طلب مقابلة الإدارة">طلب مقابلة الإدارة</option>
+                                <option value="ملاحظة أو مقترح">ملاحظة أو مقترح</option>
+                            </select>
+                            <input type="text" id="parent-msg-body" required placeholder="اكتب رسالتك للإدارة..." class="rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-xs font-bold">
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-sky-700 hover:bg-sky-800 text-white font-extrabold px-4 py-2 rounded-xl text-xs transition">إرسال للإدارة</button>
+                        </div>
+                    </form>
+                </div>
+            `;
+        }
+
+        function handleParentSendMessage(e, studentCode) {
+            e.preventDefault();
+            const sender = document.getElementById('parent-msg-sender').value.trim();
+            const topic = document.getElementById('parent-msg-topic').value;
+            const body = document.getElementById('parent-msg-body').value.trim();
+            if (!sender || !body) return;
+
+            state.parentMessages.unshift({
+                id: 'msg-' + Date.now(),
+                studentCode,
+                senderName: sender,
+                topic,
+                body,
+                date: TODAY_ISO,
+                adminReply: ''
+            });
+            saveState();
+            showToast('تم إرسال رسالتك إلى إدارة المدرسة بنجاح');
+            handleStudentInquiry({ preventDefault: () => {} });
+        }
+
+        // =========================================================================
+        // SECRET PDF-TO-GAME INTERACTIVE LAB LOGIC (4 GAMES)
+        // =========================================================================
+        function openSecretGameLab() {
+            ['public-view', 'teacher-view', 'manager-view', 'secret-game-view'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+
+            const secretView = document.getElementById('secret-game-view');
+            if (secretView) secretView.classList.remove('hidden');
+
+            const badge = document.getElementById('secret-game-student-badge');
+            if (badge && activeSecretStudent) {
+                badge.textContent = `مرحباً ${activeSecretStudent.name}`;
+            }
+            const subjSelect = document.getElementById('pdf-game-subject');
+            if (subjSelect && activeSecretStudent && activeSecretStudent.subject) {
+                subjSelect.value = activeSecretStudent.subject;
+            }
+
+            resetPdfGameToSetup();
+            showToast('تم فتح مختبر الألعاب التعليمية (4 ألعاب تفاعلية)!');
+        }
+
+        function exitSecretGameLab() {
+            stopPdfGameTimer();
+            document.getElementById('inquiry-code').value = '';
+            switchMainView('public');
+        }
+
+        function stopPdfGameTimer() {
+            if (pdfGameState.timerInterval) {
+                clearInterval(pdfGameState.timerInterval);
+                pdfGameState.timerInterval = null;
+            }
+            if (arcadeEngine.rafId) {
+                cancelAnimationFrame(arcadeEngine.rafId);
+                arcadeEngine.rafId = null;
+            }
+            if (arcadeEngine.nextQuestionTimeout) {
+                clearTimeout(arcadeEngine.nextQuestionTimeout);
+                arcadeEngine.nextQuestionTimeout = null;
+            }
+        }
+
+        function selectPdfGameModeCard(mode) {
+            const hiddenMode = document.getElementById('pdf-game-mode');
+            if (hiddenMode) hiddenMode.value = mode;
+            document.querySelectorAll('.game-mode-card-btn').forEach(btn => {
+                const active = btn.getAttribute('data-mode') === mode;
+                btn.className = active
+                    ? 'game-mode-card-btn rounded-2xl border-2 border-indigo-600 bg-indigo-50 p-4 text-right transition shadow-2xs'
+                    : 'game-mode-card-btn rounded-2xl border-2 border-slate-200 bg-slate-50 hover:border-indigo-300 p-4 text-right transition';
+            });
+        }
+
+        async function handlePdfFileSelected(e) {
+            const file = e.target.files && e.target.files[0];
+            const label = document.getElementById('pdf-selected-filename');
+            const textarea = document.getElementById('pdf-extracted-text');
+            if (!file) return;
+
+            if (label) label.textContent = `جاري قراءة الملف: ${file.name}...`;
+
+            try {
+                if (!window.pdfjsLib) throw new Error('PDF.js unavailable');
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let extractedText = '';
+                const maxPages = Math.min(pdf.numPages, 15);
+                for (let pageNum = 1; pageNum <= maxPages; pageNum++) {
+                    const page = await pdf.getPage(pageNum);
+                    const textContent = await page.getTextContent();
+                    const pageStr = textContent.items.map(item => item.str).join(' ');
+                    extractedText += pageStr + '\n';
+                }
+
+                const cleanText = extractedText.replace(/\s+/g, ' ').trim();
+                if (cleanText.length >= 25) {
+                    textarea.value = cleanText;
+                    if (label) label.textContent = `تم استخراج النص بنجاح (${file.name})`;
+                    showToast('تم استخراج محتوى الـ PDF بنجاح! اضغط بدء اللعب');
+                } else {
+                    if (label) label.textContent = `${file.name} (ملف مصور - يرجى لصق نص الدرس بالأسفل)`;
+                    showToast('هذا الـ PDF مصوّر؛ يمكنك لصق نص الدرس في المربع بالأسفل لتوليد اللعبة', 'error');
+                }
+            } catch (err) {
+                console.error('PDF parse error:', err);
+                if (label) label.textContent = `${file.name} (الصق نص الدرس بالأسفل)`;
+                showToast('يمكنك لصق فقرة الدرس مباشرة في مربع النص لتوليد اللعبة فوراً', 'error');
+            }
+        }
+
+        function fillSampleLessonForGame() {
+            const subject = document.getElementById('pdf-game-subject').value;
+            const samples = {
+                'العلوم': 'تحتاج النباتات الخضراء إلى ضوء الشمس والماء وثاني أكسيد الكربون للقيام بعملية البناء الضوئي. تمتص الجذور الماء والأملاح المعدنية من التربة. ينقل الساق الماء إلى الأوراق عبر أوعية الخشب. ينتج النبات غاز الأكسجين والسكريات أثناء البناء الضوئي. تتكون المادة من جسيمات متناهية الصغر في حالة حركة مستمرة. للمادة ثلاث حالات رئيسية هي الصلبة والسائلة والغازية. يتحول الماء من الحالة السائلة إلى الغازية بالتسخين وتسمى هذه العملية التبخر. الجاذبية الأرضية هي القوة التي تسحب الأجسام نحو مركز الأرض.',
+                'اكتشف': 'يتكون جسم الإنسان من أجهزة تعمل معاً للحفاظ على الحياة. يقوم الجهاز الهضمي بتفتيت الطعام وتحويله إلى عناصر غذائية يمتصها الجسم. يضخ القلب الدم المحمل بالأكسجين إلى جميع أجزاء الجسم عبر الأوعية الدموية. تساعدنا العادات الصحية مثل شرب الماء وممارسة الرياضة والنوم المبكر على النمو السليم. الموارد الطبيعية هي كل ما نحصل عليه من الطبيعة مثل الماء والهواء والتربة. يجب علينا ترشيد استهلاك المياه والحفاظ على نظافة البيئة.',
+                'الدراسات الاجتماعية': 'تقع مصر في الركن الشمالي الشرقي من قارة أفريقيا وتطل على البحر المتوسط شمالاً والبحر الأحمر شرقاً. نهر النيل هو أطول أنهار العالم ويمثل شريان الحياة في مصر. بنى المصريون القدماء الأهرامات في الجيزة لتكون مقابر للملوك. تنقسم مصر إلى سبع وعشرين محافظة. قناة السويس هي ممر ملاحي عالمي يربط بين البحر الأحمر والبحر المتوسط. المناخ في مصر معتدل شتاءً وحار جاف صيفاً.'
+            };
+            document.getElementById('pdf-extracted-text').value = samples[subject] || samples['العلوم'];
+            document.getElementById('pdf-selected-filename').textContent = `نموذج درس جاهز (${subject})`;
+            showToast('تم تحميل نص الدرس الجاهز — اضغط تحويل المنهج إلى لعبة');
+        }
+
+        function generateQuestionsFromText(rawText, subject) {
+            const sentences = rawText
+                .split(/[.،؟!\n]+/)
+                .map(s => s.trim())
+                .filter(s => s.split(/\s+/).length >= 4 && s.length <= 180);
+
+            const generated = [];
+            const allWordsPool = rawText
+                .replace(/[^\u0600-\u06FFa-zA-Z0-9\s]/g, ' ')
+                .split(/\s+/)
+                .filter(w => w.length >= 4);
+
+            const uniquePool = [...new Set(allWordsPool)];
+
+            sentences.slice(0, 9).forEach((sentence, idx) => {
+                const words = sentence.split(/\s+/);
+                let targetIdx = words.findIndex((w, i) => i > 0 && w.replace(/[^\u0600-\u06FFa-zA-Z0-9]/g, '').length >= 4);
+                if (targetIdx === -1) targetIdx = Math.min(1, words.length - 1);
+
+                const answerWord = words[targetIdx].replace(/[^\u0600-\u06FFa-zA-Z0-9]/g, '');
+                if (!answerWord) return;
+
+                const maskedWords = [...words];
+                maskedWords[targetIdx] = '〔 ...... 〕';
+                const questionPrompt = `أكمل العبارة من درس (${subject}): "${maskedWords.join(' ')}"`;
+
+                const distractors = uniquePool
+                    .filter(w => w !== answerWord && Math.abs(w.length - answerWord.length) <= 4)
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 3);
+
+                const fallbackDistractors = ['الطاقة', 'النظام', 'المعرفة', 'العناصر', 'الحركة', 'البيئة'];
+                while (distractors.length < 3) {
+                    const cand = fallbackDistractors.find(f => f !== answerWord && !distractors.includes(f)) || `خيار ${distractors.length + 1}`;
+                    distractors.push(cand);
+                }
+
+                const options = [answerWord, ...distractors].sort(() => Math.random() - 0.5);
+                const stageNumber = idx < 3 ? 1 : (idx < 6 ? 2 : 3);
+                const levelLabel = stageNumber === 1 ? 'تمهيدي' : (stageNumber === 2 ? 'متقدم' : 'تحدي الأبطال');
+
+                generated.push({
+                    prompt: questionPrompt,
+                    options,
+                    correctAnswer: answerWord,
+                    hint: `تبدأ الإجابة بحرف (${answerWord[0]}) وتتكون من ${answerWord.length} حروف`,
+                    stage: stageNumber,
+                    level: levelLabel
+                });
+            });
+
+            const backupBank = [
+                {
+                    prompt: `ما هي القاعدة الذهبية للتفوق في مادة (${subject})؟`,
+                    options: ['المذاكرة والفهم', 'تأجيل الواجبات', 'عدم التركيز', 'إهمال المراجعة'],
+                    correctAnswer: 'المذاكرة والفهم',
+                    hint: 'تبدأ بكلمة المذاكرة',
+                    stage: 1,
+                    level: 'تمهيدي'
+                },
+                {
+                    prompt: 'ما فائدة تقسيم المنهج إلى مراحل وأسئلة تفاعلية؟',
+                    options: ['تثبيت المعلومات', 'نسيان الدرس', 'إضاعة الوقت', 'صعوبة الفهم'],
+                    correctAnswer: 'تثبيت المعلومات',
+                    hint: 'تساعدك على حفظ وتثبيت المعلومات',
+                    stage: 2,
+                    level: 'متقدم'
+                },
+                {
+                    prompt: 'كيف تحصل على أعلى نقاط في تحدي الأبطال؟',
+                    options: ['الإجابة الصحيحة', 'التسرع دون قراءة', 'ترك السؤال فارغاً', 'التخمين العشوائي'],
+                    correctAnswer: 'الإجابة الصحيحة',
+                    hint: 'اختيار الإجابة الصحيحة بدقة',
+                    stage: 3,
+                    level: 'تحدي الأبطال'
+                }
+            ];
+
+            let bIdx = 0;
+            while (generated.length < 6) {
+                const item = backupBank[bIdx % backupBank.length];
+                const stageNum = generated.length < 2 ? 1 : (generated.length < 4 ? 2 : 3);
+                generated.push({
+                    ...item,
+                    stage: stageNum,
+                    level: stageNum === 1 ? 'تمهيدي' : (stageNum === 2 ? 'متقدم' : 'تحدي الأبطال')
+                });
+                bIdx++;
+            }
+
+            return generated;
+        }
+
+        function buildAndStartPdfGame() {
+            const text = document.getElementById('pdf-extracted-text').value.trim();
+            const subject = document.getElementById('pdf-game-subject').value;
+            const mode = document.getElementById('pdf-game-mode').value || 'car';
+            const speed = parseInt(document.getElementById('pdf-game-speed').value, 10) || 25;
+
+            if (text.length < 20) {
+                showToast('يرجى رفع ملف PDF يحتوي على نص أو لصق فقرة من الدرس أولاً', 'error');
+                return;
+            }
+
+            const questions = generateQuestionsFromText(text, subject);
+            pdfGameState = {
+                mode,
+                questions,
+                currentIndex: 0,
+                score: 0,
+                streak: 0,
+                correctCount: 0,
+                secondsPerQuestion: speed,
+                timeLeft: speed,
+                timerInterval: null,
+                answered: false,
+                hintUsed: false,
+                subject
+            };
+
+            launchActivePdfGameView(true);
+        }
+
+        function launchActivePdfGameView(resetLives) {
+            stopPdfGameTimer();
+            document.getElementById('pdf-game-setup-card').classList.add('hidden');
+            document.getElementById('pdf-game-summary-card').classList.add('hidden');
+
+            if (pdfGameState.mode === 'cards') {
+                document.getElementById('pdf-arcade-game-card').classList.add('hidden');
+                document.getElementById('pdf-game-arena-card').classList.remove('hidden');
+                renderPdfGameQuestion();
+            } else {
+                document.getElementById('pdf-game-arena-card').classList.add('hidden');
+                document.getElementById('pdf-arcade-game-card').classList.remove('hidden');
+                updateArcadeSwitcherUI();
+                startArcadeEngine(resetLives);
+            }
+        }
+
+        function switchActivePdfGameMode(newMode) {
+            if (!pdfGameState.questions || pdfGameState.questions.length === 0) return;
+            pdfGameState.mode = newMode;
+            selectPdfGameModeCard(newMode);
+            launchActivePdfGameView(false);
+        }
+
+        function updateArcadeSwitcherUI() {
+            document.querySelectorAll('.arcade-switch-btn').forEach(btn => {
+                const active = btn.getAttribute('data-switch-mode') === pdfGameState.mode;
+                btn.className = active
+                    ? 'arcade-switch-btn bg-navy-900 text-white text-xs font-black px-3 py-1.5 rounded-xl transition'
+                    : 'arcade-switch-btn bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-black px-3 py-1.5 rounded-xl transition';
+            });
+
+            const actionBtn = document.getElementById('arcade-action-btn');
+            const hintLabel = document.getElementById('arcade-control-hint');
+            if (pdfGameState.mode === 'space') {
+                actionBtn.classList.remove('hidden');
+                actionBtn.textContent = 'إطلاق الليزر (Space)';
+                if (hintLabel) hintLabel.textContent = 'وجه السفينة بالأسهم وأطلق الليزر نحو نيزك الإجابة الصحيحة';
+            } else if (pdfGameState.mode === 'keeper') {
+                actionBtn.classList.remove('hidden');
+                actionBtn.textContent = 'قفزة التصدي (Space)';
+                if (hintLabel) hintLabel.textContent = 'اختر زاوية المرمى الصحيحة بالأسهم أو اضغط على الزاوية للتصدي';
+            } else {
+                actionBtn.classList.add('hidden');
+                if (hintLabel) hintLabel.textContent = 'وجّه السيارة بالأسهم أو اضغط مباشرة على حارة الإجابة الصحيحة';
+            }
+        }
+
+        function startArcadeEngine(resetLives) {
+            if (resetLives) arcadeEngine.lives = 3;
+            arcadeEngine.particles = [];
+            arcadeEngine.lasers = [];
+            arcadeEngine.turboTimer = 0;
+            arcadeEngine.shakeTimer = 0;
+
+            const sp = pdfGameState.secondsPerQuestion;
+            arcadeEngine.baseSpeed = sp === 18 ? 1.85 : (sp === 35 ? 1.0 : 1.35);
+
+            const canvas = document.getElementById('arcade-game-canvas');
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = Math.max(320, Math.floor(rect.width || 800));
+            canvas.height = 390;
+
+            arcadeEngine.stars = Array.from({ length: 45 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: 1 + Math.random() * 1.8,
+                s: 0.6 + Math.random() * 1.5
+            }));
+
+            prepareArcadeRound();
+            arcadeLoop();
+        }
+
+        function prepareArcadeRound() {
+            const q = pdfGameState.questions[pdfGameState.currentIndex];
+            if (!q || arcadeEngine.lives <= 0) {
+                finishPdfGame();
+                return;
+            }
+
+            arcadeEngine.slotCount = q.options.length;
+            arcadeEngine.selectedSlot = Math.floor(arcadeEngine.slotCount / 2);
+            arcadeEngine.dropY = -75;
+            arcadeEngine.roundResolved = false;
+            arcadeEngine.hintLitSlot = -1;
+            arcadeEngine.lasers = [];
+            pdfGameState.hintUsed = false;
+
+            const canvas = document.getElementById('arcade-game-canvas');
+            const W = canvas.width;
+            const H = canvas.height;
+            const slotW = W / arcadeEngine.slotCount;
+            const vIdx = (arcadeEngine.slotCount - 1) - arcadeEngine.selectedSlot;
+            arcadeEngine.visualX = (vIdx + 0.5) * slotW;
+
+            arcadeEngine.ballState = pdfGameState.mode === 'keeper'
+                ? { x: W / 2, y: H - 52, targetX: W / 2, targetY: 125, progress: 0, kicked: false, targetSlot: 0 }
+                : null;
+
+            document.getElementById('arcade-hud-stage').textContent = `المرحلة ${q.stage} / 3`;
+            document.getElementById('arcade-hud-score').textContent = pdfGameState.score;
+            document.getElementById('arcade-hud-streak').textContent = `${pdfGameState.streak} 🔥`;
+            document.getElementById('arcade-hud-lives').textContent = '❤️'.repeat(Math.max(0, arcadeEngine.lives)) || '💔';
+            document.getElementById('arcade-question-badge').textContent = `المرحلة ${q.stage} — مستوى ${q.level}`;
+            document.getElementById('arcade-question-counter').textContent = `السؤال ${pdfGameState.currentIndex + 1} من ${pdfGameState.questions.length}`;
+            document.getElementById('arcade-question-text').textContent = q.prompt;
+            document.getElementById('arcade-feedback-banner').classList.add('hidden');
+        }
+
+        function moveArcadeActor(delta) {
+            if (pdfGameState.mode === 'cards' || arcadeEngine.roundResolved) return;
+            const next = arcadeEngine.selectedSlot + delta;
+            if (next >= 0 && next < arcadeEngine.slotCount) {
+                arcadeEngine.selectedSlot = next;
+            }
+        }
+
+        function triggerArcadeAction() {
+            if (arcadeEngine.roundResolved) return;
+            if (pdfGameState.mode === 'space') {
+                arcadeEngine.lasers.push({ x: arcadeEngine.visualX, y: 315, slot: arcadeEngine.selectedSlot });
+            } else if (pdfGameState.mode === 'keeper') {
+                launchPenaltyKick(arcadeEngine.selectedSlot);
+            }
+        }
+
+        function launchPenaltyKick(slotIdx) {
+            if (arcadeEngine.roundResolved || !arcadeEngine.ballState || arcadeEngine.ballState.kicked) return;
+            const canvas = document.getElementById('arcade-game-canvas');
+            const W = canvas.width;
+            const margin = W * 0.08;
+            const goalW = W - margin * 2;
+            const slotW = goalW / arcadeEngine.slotCount;
+            const vIdx = (arcadeEngine.slotCount - 1) - slotIdx;
+
+            arcadeEngine.selectedSlot = slotIdx;
+            arcadeEngine.ballState.kicked = true;
+            arcadeEngine.ballState.targetSlot = slotIdx;
+            arcadeEngine.ballState.targetX = margin + (vIdx + 0.5) * slotW;
+            arcadeEngine.ballState.targetY = 122;
+        }
+
+        function useArcadeSmartHint() {
+            if (arcadeEngine.roundResolved || pdfGameState.hintUsed) return;
+            const q = pdfGameState.questions[pdfGameState.currentIndex];
+            pdfGameState.hintUsed = true;
+            arcadeEngine.hintLitSlot = q.options.findIndex(o => o === q.correctAnswer);
+            showToast(`تلميح: ${q.hint}`);
+        }
+
+        function resolveArcadeRound(chosenSlot, hitX, hitY) {
+            if (arcadeEngine.roundResolved) return;
+            arcadeEngine.roundResolved = true;
+
+            const q = pdfGameState.questions[pdfGameState.currentIndex];
+            const isCorrect = chosenSlot >= 0 && q.options[chosenSlot] === q.correctAnswer;
+            const banner = document.getElementById('arcade-feedback-banner');
+            banner.classList.remove('hidden');
+
+            if (isCorrect) {
+                pdfGameState.streak++;
+                pdfGameState.correctCount++;
+                arcadeEngine.turboTimer = 45;
+                const pts = Math.max(50, 100 + pdfGameState.streak * 15 - (pdfGameState.hintUsed ? 20 : 0));
+                pdfGameState.score += pts;
+                banner.className = 'absolute inset-x-4 top-4 rounded-xl p-3 text-center text-xs font-black shadow-lg bg-emerald-600 text-white fade-in';
+                banner.textContent = `إجابة صحيحة وممتازة! +${pts} نقطة`;
+            } else {
+                pdfGameState.streak = 0;
+                arcadeEngine.lives--;
+                arcadeEngine.shakeTimer = 22;
+                banner.className = 'absolute inset-x-4 top-4 rounded-xl p-3 text-center text-xs font-black shadow-lg bg-rose-600 text-white fade-in';
+                banner.textContent = `إجابة غير صحيحة! الإجابة الصحيحة هي: «${q.correctAnswer}»`;
+            }
+
+            document.getElementById('arcade-hud-score').textContent = pdfGameState.score;
+            document.getElementById('arcade-hud-streak').textContent = `${pdfGameState.streak} 🔥`;
+            document.getElementById('arcade-hud-lives').textContent = '❤️'.repeat(Math.max(0, arcadeEngine.lives)) || '💔';
+
+            for (let i = 0; i < 22; i++) {
+                arcadeEngine.particles.push({
+                    x: hitX, y: hitY,
+                    vx: (Math.random() - 0.5) * 9,
+                    vy: (Math.random() - 0.5) * 9,
+                    life: 28,
+                    color: isCorrect ? '#fbbf24' : '#ef4444'
+                });
+            }
+
+            arcadeEngine.nextQuestionTimeout = setTimeout(() => {
+                pdfGameState.currentIndex++;
+                if (arcadeEngine.lives <= 0 || pdfGameState.currentIndex >= pdfGameState.questions.length) {
+                    finishPdfGame();
+                } else {
+                    prepareArcadeRound();
+                }
+            }, 1300);
+        }
+
+        function roundRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+        }
+
+        function arcadeLoop() {
+            const canvas = document.getElementById('arcade-game-canvas');
+            if (!canvas || document.getElementById('pdf-arcade-game-card').classList.contains('hidden')) return;
+
+            const ctx = canvas.getContext('2d');
+            const W = canvas.width;
+            const H = canvas.height;
+            const q = pdfGameState.questions[pdfGameState.currentIndex];
+
+            ctx.save();
+            if (arcadeEngine.shakeTimer > 0) {
+                arcadeEngine.shakeTimer--;
+                ctx.translate((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 8);
+            }
+
+            if (pdfGameState.mode === 'car') drawCarGame(ctx, W, H, q);
+            else if (pdfGameState.mode === 'space') drawSpaceGame(ctx, W, H, q);
+            else if (pdfGameState.mode === 'keeper') drawKeeperGame(ctx, W, H, q);
+
+            arcadeEngine.particles = arcadeEngine.particles.filter(p => p.life > 0);
+            arcadeEngine.particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            ctx.restore();
+            arcadeEngine.rafId = requestAnimationFrame(arcadeLoop);
+        }
+
+        function drawCarGame(ctx, W, H, q) {
+            ctx.fillStyle = '#065f46';
+            ctx.fillRect(0, 0, W, H);
+            const margin = Math.max(12, W * 0.03);
+            const roadW = W - margin * 2;
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(margin, 0, roadW, H);
+
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillRect(margin - 4, 0, 4, H);
+            ctx.fillRect(W - margin, 0, 4, H);
+
+            const speed = arcadeEngine.baseSpeed + (q ? (q.stage - 1) * 0.32 : 0) + (arcadeEngine.turboTimer > 0 ? 1.6 : 0);
+            arcadeEngine.scrollOffset = (arcadeEngine.scrollOffset + speed * 2.5) % 40;
+
+            const lanes = arcadeEngine.slotCount;
+            const laneW = roadW / lanes;
+            ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([20, 20]);
+            ctx.lineDashOffset = -arcadeEngine.scrollOffset * 1.4;
+            for (let i = 1; i < lanes; i++) {
+                ctx.beginPath();
+                ctx.moveTo(margin + i * laneW, 0);
+                ctx.lineTo(margin + i * laneW, H);
+                ctx.stroke();
+            }
+            ctx.setLineDash([]);
+
+            if (q) {
+                if (!arcadeEngine.roundResolved) arcadeEngine.dropY += speed;
+                const gateH = 56;
+                q.options.forEach((opt, idx) => {
+                    const vIdx = (lanes - 1) - idx;
+                    const gx = margin + vIdx * laneW + 6;
+                    const gw = laneW - 12;
+                    const gy = arcadeEngine.dropY;
+                    const hint = arcadeEngine.hintLitSlot === idx;
+                    const sel = arcadeEngine.selectedSlot === idx;
+
+                    ctx.fillStyle = hint ? '#f59e0b' : (sel ? '#1e3a8a' : '#0f172a');
+                    roundRect(ctx, gx, gy, gw, gateH, 10);
+                    ctx.fill();
+                    ctx.lineWidth = 2.5;
+                    ctx.strokeStyle = hint ? '#fef08a' : (sel ? '#fbbf24' : '#64748b');
+                    ctx.stroke();
+
+                    ctx.fillStyle = hint ? '#0f172a' : '#ffffff';
+                    ctx.font = 'bold 13px Cairo, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    const txt = opt.length > 15 ? opt.slice(0, 14) + '…' : opt;
+                    ctx.fillText(txt, gx + gw / 2, gy + gateH / 2);
+                });
+
+                if (!arcadeEngine.roundResolved && arcadeEngine.dropY + gateH >= 290) {
+                    resolveArcadeRound(arcadeEngine.selectedSlot, arcadeEngine.visualX, 310);
+                }
+            }
+
+            const vTarget = (lanes - 1) - arcadeEngine.selectedSlot;
+            arcadeEngine.visualX += ((margin + (vTarget + 0.5) * laneW) - arcadeEngine.visualX) * 0.24;
+            const cx = arcadeEngine.visualX;
+            const cy = 320;
+            const cw = Math.min(52, laneW * 0.52);
+
+            if (arcadeEngine.turboTimer > 0) {
+                arcadeEngine.turboTimer--;
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath();
+                ctx.moveTo(cx - 12, cy + 38);
+                ctx.lineTo(cx, cy + 62 + Math.random() * 12);
+                ctx.lineTo(cx + 12, cy + 38);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            ctx.fillStyle = '#f59e0b';
+            roundRect(ctx, cx - cw / 2, cy - 38, cw, 76, 12);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.fillStyle = '#0f172a';
+            roundRect(ctx, cx - cw * 0.34, cy - 16, cw * 0.68, 26, 5);
+            ctx.fill();
+        }
+
+        function drawSpaceGame(ctx, W, H, q) {
+            ctx.fillStyle = '#090d1f';
+            ctx.fillRect(0, 0, W, H);
+            arcadeEngine.stars.forEach(s => {
+                s.y = (s.y + s.s) % H;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            const lanes = arcadeEngine.slotCount;
+            const laneW = W / lanes;
+            const speed = arcadeEngine.baseSpeed * 0.65 + (q ? (q.stage - 1) * 0.2 : 0);
+
+            arcadeEngine.lasers = arcadeEngine.lasers.filter(l => l.y > -20);
+            arcadeEngine.lasers.forEach(l => {
+                l.y -= 13;
+                ctx.fillStyle = '#38bdf8';
+                roundRect(ctx, l.x - 4, l.y - 16, 8, 24, 4);
+                ctx.fill();
+                if (!arcadeEngine.roundResolved && l.y <= arcadeEngine.dropY + 48) {
+                    resolveArcadeRound(l.slot, l.x, arcadeEngine.dropY + 22);
+                }
+            });
+
+            if (q) {
+                if (!arcadeEngine.roundResolved) arcadeEngine.dropY += speed;
+                const mh = 58;
+                q.options.forEach((opt, idx) => {
+                    const vIdx = (lanes - 1) - idx;
+                    const cx = (vIdx + 0.5) * laneW;
+                    const cy = arcadeEngine.dropY + mh / 2;
+                    const mw = Math.min(laneW - 12, 175);
+                    const hint = arcadeEngine.hintLitSlot === idx;
+                    const sel = arcadeEngine.selectedSlot === idx;
+
+                    ctx.fillStyle = hint ? '#f59e0b' : '#334155';
+                    roundRect(ctx, cx - mw / 2, cy - mh / 2, mw, mh, 14);
+                    ctx.fill();
+                    ctx.lineWidth = 2.5;
+                    ctx.strokeStyle = hint ? '#fef08a' : (sel ? '#38bdf8' : '#94a3b8');
+                    ctx.stroke();
+
+                    ctx.fillStyle = hint ? '#0f172a' : '#ffffff';
+                    ctx.font = 'bold 13px Cairo, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    const txt = opt.length > 15 ? opt.slice(0, 14) + '…' : opt;
+                    ctx.fillText(txt, cx, cy);
+                });
+
+                if (!arcadeEngine.roundResolved && arcadeEngine.dropY + mh >= H - 85) {
+                    resolveArcadeRound(-1, arcadeEngine.visualX, H - 70);
+                }
+            }
+
+            const vTarget = (lanes - 1) - arcadeEngine.selectedSlot;
+            arcadeEngine.visualX += (((vTarget + 0.5) * laneW) - arcadeEngine.visualX) * 0.25;
+            const sx = arcadeEngine.visualX;
+            const sy = H - 48;
+
+            ctx.fillStyle = '#f8fafc';
+            ctx.beginPath();
+            ctx.moveTo(sx, sy - 30);
+            ctx.lineTo(sx + 24, sy + 20);
+            ctx.lineTo(sx - 24, sy + 20);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#38bdf8';
+            ctx.beginPath();
+            ctx.arc(sx, sy - 4, 7, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawKeeperGame(ctx, W, H, q) {
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, W, 100);
+            ctx.fillStyle = '#15803d';
+            ctx.fillRect(0, 100, W, H - 100);
+
+            const gx = W * 0.08;
+            const gw = W * 0.84;
+            const gy = 50;
+            const gh = 115;
+
+            ctx.fillStyle = 'rgba(255,255,255,0.15)';
+            ctx.fillRect(gx, gy, gw, gh);
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 5;
+            ctx.strokeRect(gx, gy, gw, gh);
+
+            const zones = arcadeEngine.slotCount;
+            const zw = gw / zones;
+            if (q) {
+                q.options.forEach((opt, idx) => {
+                    const vIdx = (zones - 1) - idx;
+                    const zx = gx + vIdx * zw + 5;
+                    const boxW = zw - 10;
+                    const hint = arcadeEngine.hintLitSlot === idx;
+                    const sel = arcadeEngine.selectedSlot === idx;
+
+                    ctx.fillStyle = hint ? '#f59e0b' : (sel ? '#1e3a8a' : '#0f172a');
+                    roundRect(ctx, zx, gy + 8, boxW, 48, 8);
+                    ctx.fill();
+                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = hint ? '#fef08a' : (sel ? '#fbbf24' : '#cbd5e1');
+                    ctx.stroke();
+
+                    ctx.fillStyle = hint ? '#0f172a' : '#ffffff';
+                    ctx.font = 'bold 12px Cairo, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    const txt = opt.length > 14 ? opt.slice(0, 13) + '…' : opt;
+                    ctx.fillText(txt, zx + boxW / 2, gy + 32);
+                });
+            }
+
+            const vTarget = (zones - 1) - arcadeEngine.selectedSlot;
+            arcadeEngine.visualX += ((gx + (vTarget + 0.5) * zw) - arcadeEngine.visualX) * 0.25;
+            const kx = arcadeEngine.visualX;
+
+            ctx.fillStyle = '#f59e0b';
+            roundRect(ctx, kx - 16, 125, 32, 32, 6);
+            ctx.fill();
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(kx - 22, 134, 7, 0, Math.PI * 2);
+            ctx.arc(kx + 22, 134, 7, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (arcadeEngine.ballState) {
+                const bs = arcadeEngine.ballState;
+                if (bs.kicked && !arcadeEngine.roundResolved) {
+                    bs.progress = Math.min(1, bs.progress + 0.07);
+                    bs.x = (W / 2) + (bs.targetX - W / 2) * bs.progress;
+                    bs.y = (H - 52) + (bs.targetY - (H - 52)) * bs.progress;
+                    if (bs.progress >= 1) resolveArcadeRound(bs.targetSlot, bs.x, bs.y);
+                }
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(bs.x, bs.y, 15, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#0f172a';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+
+        function renderPdfGameQuestion() {
+            stopPdfGameTimer();
+            const q = pdfGameState.questions[pdfGameState.currentIndex];
+            if (!q) {
+                finishPdfGame();
+                return;
+            }
+
+            pdfGameState.answered = false;
+            pdfGameState.hintUsed = false;
+            pdfGameState.timeLeft = pdfGameState.secondsPerQuestion;
+
+            document.getElementById('game-hud-stage').textContent = `المرحلة ${q.stage} / 3`;
+            document.getElementById('game-hud-level').textContent = q.level;
+            document.getElementById('game-hud-score').textContent = pdfGameState.score;
+            document.getElementById('game-hud-streak').textContent = `${pdfGameState.streak} 🔥`;
+            document.getElementById('game-hud-timer').textContent = `${pdfGameState.timeLeft}s`;
+
+            const total = pdfGameState.questions.length;
+            const currentNum = pdfGameState.currentIndex + 1;
+            document.getElementById('game-question-counter').textContent = `السؤال ${currentNum} من ${total}`;
+            document.getElementById('game-subject-label').textContent = `مادة: ${pdfGameState.subject}`;
+            document.getElementById('game-progress-bar').style.width = `${Math.round((currentNum / total) * 100)}%`;
+
+            document.getElementById('game-question-type-badge').textContent = `المرحلة ${q.stage} — مستوى ${q.level}`;
+            document.getElementById('game-question-text').textContent = q.prompt;
+
+            const feedback = document.getElementById('game-feedback-banner');
+            feedback.classList.add('hidden');
+            document.getElementById('game-next-btn').classList.add('hidden');
+
+            const optionsGrid = document.getElementById('game-options-grid');
+            optionsGrid.innerHTML = q.options.map((opt, i) => `
+                <button type="button" onclick="handlePdfGameAnswer(${i})" id="game-opt-btn-${i}" class="text-right p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-indigo-600 hover:bg-indigo-50/60 font-black text-sm text-navy-900 transition flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-xl bg-slate-100 text-navy-900 flex items-center justify-center text-xs font-black shrink-0">${i + 1}</span>
+                    <span>${escapeHTML(opt)}</span>
+                </button>
+            `).join('');
+
+            pdfGameState.timerInterval = setInterval(() => {
+                pdfGameState.timeLeft--;
+                const timerEl = document.getElementById('game-hud-timer');
+                if (timerEl) timerEl.textContent = `${Math.max(0, pdfGameState.timeLeft)}s`;
+
+                if (pdfGameState.timeLeft <= 0) {
+                    stopPdfGameTimer();
+                    handlePdfGameTimeout();
+                }
+            }, 1000);
+        }
+
+        function useCardsSmartHint() {
+            if (pdfGameState.answered || pdfGameState.hintUsed) return;
+            const q = pdfGameState.questions[pdfGameState.currentIndex];
+            pdfGameState.hintUsed = true;
+            showToast(`تلميح: ${q.hint}`);
+        }
+
+        function handlePdfGameAnswer(optionIndex) {
+            if (pdfGameState.answered) return;
+            pdfGameState.answered = true;
+            stopPdfGameTimer();
+
+            const q = pdfGameState.questions[pdfGameState.currentIndex];
+            const chosen = q.options[optionIndex];
+            const isCorrect = chosen === q.correctAnswer;
+
+            q.options.forEach((opt, i) => {
+                const btn = document.getElementById(`game-opt-btn-${i}`);
+                if (!btn) return;
+                btn.disabled = true;
+                if (opt === q.correctAnswer) {
+                    btn.className = 'text-right p-4 rounded-2xl border-2 border-emerald-600 bg-emerald-50 font-black text-sm text-emerald-950 flex items-center gap-3';
+                } else if (i === optionIndex && !isCorrect) {
+                    btn.className = 'text-right p-4 rounded-2xl border-2 border-rose-600 bg-rose-50 font-black text-sm text-rose-950 flex items-center gap-3';
+                }
+            });
+
+            const feedback = document.getElementById('game-feedback-banner');
+            feedback.classList.remove('hidden');
+
+            if (isCorrect) {
+                pdfGameState.streak++;
+                pdfGameState.correctCount++;
+                const speedBonus = Math.max(5, pdfGameState.timeLeft * 2);
+                const streakBonus = pdfGameState.streak * 10;
+                const gained = Math.max(50, 100 + speedBonus + streakBonus - (pdfGameState.hintUsed ? 20 : 0));
+                pdfGameState.score += gained;
+
+                document.getElementById('game-hud-score').textContent = pdfGameState.score;
+                document.getElementById('game-hud-streak').textContent = `${pdfGameState.streak} 🔥`;
+
+                feedback.className = 'rounded-2xl p-4 text-xs font-black bg-emerald-100 border border-emerald-300 text-emerald-950 flex items-center justify-between gap-3 fade-in';
+                feedback.innerHTML = `<span><i class="fa-solid fa-circle-check text-emerald-600 ml-1.5"></i>إجابة صحيحة وممتازة! حصلت على +${gained} نقطة</span>`;
+            } else {
+                pdfGameState.streak = 0;
+                document.getElementById('game-hud-streak').textContent = '0 🔥';
+
+                feedback.className = 'rounded-2xl p-4 text-xs font-black bg-rose-100 border border-rose-300 text-rose-950 flex items-center justify-between gap-3 fade-in';
+                feedback.innerHTML = `<span><i class="fa-solid fa-circle-xmark text-rose-600 ml-1.5"></i>إجابة غير صحيحة — الإجابة الصحيحة هي: «${escapeHTML(q.correctAnswer)}»</span>`;
+            }
+
+            document.getElementById('game-next-btn').classList.remove('hidden');
+        }
+
+        function handlePdfGameTimeout() {
+            if (pdfGameState.answered) return;
+            pdfGameState.answered = true;
+            pdfGameState.streak = 0;
+
+            const q = pdfGameState.questions[pdfGameState.currentIndex];
+            q.options.forEach((opt, i) => {
+                const btn = document.getElementById(`game-opt-btn-${i}`);
+                if (!btn) return;
+                btn.disabled = true;
+                if (opt === q.correctAnswer) {
+                    btn.className = 'text-right p-4 rounded-2xl border-2 border-emerald-600 bg-emerald-50 font-black text-sm text-emerald-950 flex items-center gap-3';
+                }
+            });
+
+            const feedback = document.getElementById('game-feedback-banner');
+            feedback.classList.remove('hidden');
+            feedback.className = 'rounded-2xl p-4 text-xs font-black bg-amber-100 border border-amber-300 text-amber-950 flex items-center justify-between gap-3 fade-in';
+            feedback.innerHTML = `<span><i class="fa-solid fa-clock text-amber-600 ml-1.5"></i>انتهى الوقت! الإجابة الصحيحة هي: «${escapeHTML(q.correctAnswer)}»</span>`;
+            document.getElementById('game-next-btn').classList.remove('hidden');
+        }
+
+        function nextPdfGameQuestion() {
+            pdfGameState.currentIndex++;
+            if (pdfGameState.currentIndex >= pdfGameState.questions.length) {
+                finishPdfGame();
+            } else {
+                renderPdfGameQuestion();
+            }
+        }
+
+        function finishPdfGame() {
+            stopPdfGameTimer();
+            document.getElementById('pdf-arcade-game-card').classList.add('hidden');
+            document.getElementById('pdf-game-arena-card').classList.add('hidden');
+            document.getElementById('pdf-game-summary-card').classList.remove('hidden');
+
+            const total = pdfGameState.questions.length;
+            const ratio = total > 0 ? (pdfGameState.correctCount / total) : 0;
+            const rank = ratio >= 0.85 ? 'بطل متفوق 🥇' : (ratio >= 0.6 ? 'نجم مجتهد 🥈' : 'مقاتل مثابر 🥉');
+
+            document.getElementById('game-summary-subtitle').textContent = `مادة ${pdfGameState.subject} — أتممت المراحل الثلاث بنجاح`;
+            document.getElementById('game-final-score').textContent = pdfGameState.score;
+            document.getElementById('game-final-correct').textContent = `${pdfGameState.correctCount} / ${total}`;
+            document.getElementById('game-final-rank').textContent = rank;
+        }
+
+        function replayCurrentPdfGame() {
+            pdfGameState.currentIndex = 0;
+            pdfGameState.score = 0;
+            pdfGameState.streak = 0;
+            pdfGameState.correctCount = 0;
+            launchActivePdfGameView(true);
+        }
+
+        function resetPdfGameToSetup() {
+            stopPdfGameTimer();
+            document.getElementById('pdf-arcade-game-card').classList.add('hidden');
+            document.getElementById('pdf-game-arena-card').classList.add('hidden');
+            document.getElementById('pdf-game-summary-card').classList.add('hidden');
+            document.getElementById('pdf-game-setup-card').classList.remove('hidden');
+        }
+
+        // =========================================================================
+        // TEACHERS PORTAL LOGIC + OCR GRADE SHEET UPLOAD
+        // =========================================================================
+        function updateSelectedTeacherGradesCount() {
+            const checked = document.querySelectorAll('input[name="t-login-grade-item"]:checked');
+            const badge = document.getElementById('t-selected-grades-count');
+            if (badge) badge.textContent = `${checked.length} محدد`;
+        }
+
+        function handleTeacherLogin(e) {
+            e.preventDefault();
+            const name = document.getElementById('t-login-name').value.trim();
+            const email = document.getElementById('t-login-email').value.trim();
+            const subject = document.getElementById('t-login-subject').value;
+            const pin = document.getElementById('t-login-pin').value.trim();
+            const checkedGrades = Array.from(document.querySelectorAll('input[name="t-login-grade-item"]:checked')).map(cb => cb.value);
+
+            if (checkedGrades.length === 0) {
+                showToast('يرجى اختيار صف دراسي واحد على الأقل يدرّس له المعلم', 'error');
+                return;
+            }
+
+            if (pin !== state.securityPins.teacherPin) {
+                showToast('الرقم السري للمدرسين غير صحيح', 'error');
+                return;
+            }
+
+            currentTeacherSession = {
+                name,
+                email,
+                subject,
+                grades: checkedGrades
+            };
+
+            logTeacherActivity('تسجيل دخول إلى بوابة المدرسين');
+
+            document.getElementById('teacher-login-box').classList.add('hidden');
+            document.getElementById('teacher-dashboard-box').classList.remove('hidden');
+
+            document.getElementById('dash-teacher-name').textContent = name;
+            document.getElementById('dash-teacher-email').textContent = email;
+            document.getElementById('dash-teacher-subject-badge').textContent = subject;
+            document.getElementById('dash-teacher-grades-badge').textContent = checkedGrades.join('، ');
+
+            document.getElementById('grd-subject').value = subject;
+            document.getElementById('att-subject').value = subject;
+            document.getElementById('star-subject').value = subject;
+            document.getElementById('att-date').value = TODAY_ISO;
+            document.getElementById('star-date').value = TODAY_ISO;
+
+            populateTeacherGradeFilters();
+            refreshTeacherDashboard();
+            showToast(`أهلاً بك يا ${name} في بوابة المدرسين`);
+        }
+
+        function populateTeacherGradeFilters() {
+            if (!currentTeacherSession) return;
+            const allowedGrades = currentTeacherSession.grades;
+            ['grd-grade', 'att-grade', 'star-grade'].forEach(id => {
+                const sel = document.getElementById(id);
+                if (!sel) return;
+                sel.innerHTML = [`<option value="ALL">جميع صفوفي (${allowedGrades.length})</option>`]
+                    .concat(allowedGrades.map(g => `<option value="${escapeHTML(g)}">${escapeHTML(g)}</option>`))
+                    .join('');
+            });
+
+            populateGradeStudentDropdown();
+            populateAttStudentDropdown();
+            populateStarStudentDropdown();
+        }
+
+        function getFilteredStudentsForTeacher(gradeFilter) {
+            if (!currentTeacherSession) return [];
+            const allowed = currentTeacherSession.grades;
+            return state.students.filter(st => {
+                if (!allowed.includes(st.grade)) return false;
+                if (gradeFilter && gradeFilter !== 'ALL' && st.grade !== gradeFilter) return false;
+                return true;
+            });
+        }
+
+        function populateGradeStudentDropdown() {
+            const gradeVal = document.getElementById('grd-grade').value;
+            const list = getFilteredStudentsForTeacher(gradeVal);
+            const sel = document.getElementById('grd-student-code');
+            sel.innerHTML = list.length === 0
+                ? `<option value="">لا يوجد طلاب مسجلون في هذا الصف</option>`
+                : list.map(s => `<option value="${escapeHTML(s.code)}">${escapeHTML(s.name)} — (${escapeHTML(s.grade)})</option>`).join('');
+        }
+
+        function populateAttStudentDropdown() {
+            const gradeVal = document.getElementById('att-grade').value;
+            const list = getFilteredStudentsForTeacher(gradeVal);
+            const sel = document.getElementById('att-student-code');
+            sel.innerHTML = list.length === 0
+                ? `<option value="">لا يوجد طلاب مسجلون في هذا الصف</option>`
+                : list.map(s => `<option value="${escapeHTML(s.code)}">${escapeHTML(s.name)} — (${escapeHTML(s.grade)})</option>`).join('');
+        }
+
+        function populateStarStudentDropdown() {
+            const gradeVal = document.getElementById('star-grade').value;
+            const list = getFilteredStudentsForTeacher(gradeVal);
+            const sel = document.getElementById('star-student-code');
+            sel.innerHTML = list.length === 0
+                ? `<option value="">لا يوجد طلاب مسجلون في هذا الصف</option>`
+                : list.map(s => `<option value="${escapeHTML(s.code)}">${escapeHTML(s.name)} — (${escapeHTML(s.grade)})</option>`).join('');
+        }
+
+        function logoutTeacher() {
+            currentTeacherSession = null;
+            document.getElementById('teacher-dashboard-box').classList.add('hidden');
+            document.getElementById('teacher-login-box').classList.remove('hidden');
+            document.getElementById('t-login-pin').value = '';
+            showToast('تم تسجيل الخروج من بوابة المدرسين');
+        }
+
+        function logTeacherActivity(actionText) {
+            if (!currentTeacherSession) return;
+            const nowStr = new Date().toLocaleString('ar-EG');
+            const existingIdx = state.teacherActivity.findIndex(item => item.email === currentTeacherSession.email);
+            const record = {
+                name: currentTeacherSession.name,
+                email: currentTeacherSession.email,
+                subject: currentTeacherSession.subject,
+                grades: currentTeacherSession.grades.join('، '),
+                loginTime: existingIdx >= 0 ? state.teacherActivity[existingIdx].loginTime : nowStr,
+                lastAction: `${actionText} (${nowStr})`
+            };
+            if (existingIdx >= 0) {
+                state.teacherActivity[existingIdx] = record;
+            } else {
+                state.teacherActivity.unshift(record);
+            }
+            saveState();
+        }
+
+        function switchDashboardTab(tabName) {
+            ['grades', 'attendance', 'stars'].forEach(t => {
+                const panel = document.getElementById(`dash-tab-${t}`);
+                const btn = document.getElementById(`tab-btn-${t}`);
+                if (panel) panel.classList.toggle('hidden', t !== tabName);
+                if (btn) {
+                    btn.className = t === tabName
+                        ? 'bg-navy-900 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition'
+                        : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition';
+                }
+            });
+        }
+
+        function refreshTeacherDashboard() {
+            document.getElementById('stat-students').textContent = state.students.length;
+            document.getElementById('stat-grades').textContent = state.grades.length;
+            document.getElementById('stat-attendance').textContent = state.attendance.length;
+            document.getElementById('stat-stars').textContent = state.stars.length;
+
+            const lockBanner = document.getElementById('teacher-grading-lock-banner');
+            const formCard = document.getElementById('teacher-grade-form-card');
+            if (state.gradingLocked) {
+                if (lockBanner) lockBanner.classList.remove('hidden');
+                if (formCard) formCard.classList.add('opacity-60', 'pointer-events-none');
+            } else {
+                if (lockBanner) lockBanner.classList.add('hidden');
+                if (formCard) formCard.classList.remove('opacity-60', 'pointer-events-none');
+            }
+
+            const gradesTbody = document.getElementById('dash-grades-tbody');
+            gradesTbody.innerHTML = state.grades.map(g => {
+                const st = getStudentByCode(g.studentCode);
+                return `
+                    <tr>
+                        <td class="py-3 px-4 font-black text-navy-900">${escapeHTML(st ? st.name : 'طالب')}</td>
+                        <td class="py-3 px-4 font-bold text-slate-600">${escapeHTML(st ? st.grade : '')} — ${escapeHTML(g.subject)}</td>
+                        <td class="py-3 px-4">${escapeHTML(g.title)} (${escapeHTML(g.type)})</td>
+                        <td class="py-3 px-4 font-mono font-black text-emerald-700" dir="ltr">${g.score} / ${g.maxScore}</td>
+                        <td class="py-3 px-4 text-slate-500">${escapeHTML(g.teacherName)}</td>
+                        <td class="py-3 px-4 text-left">
+                            <button type="button" onclick="deleteGradeRecord('${g.id}')" class="text-rose-600 hover:text-rose-800 font-bold"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            const attTbody = document.getElementById('dash-att-tbody');
+            attTbody.innerHTML = state.attendance.map(a => {
+                const st = getStudentByCode(a.studentCode);
+                return `
+                    <tr>
+                        <td class="py-3 px-4 font-black text-navy-900">${escapeHTML(st ? st.name : 'طالب')}</td>
+                        <td class="py-3 px-4 font-bold text-slate-600">${escapeHTML(st ? st.grade : '')} — ${escapeHTML(a.subject)}</td>
+                        <td class="py-3 px-4 font-mono">${escapeHTML(a.date)}</td>
+                        <td class="py-3 px-4 font-bold ${a.status === 'present' ? 'text-emerald-700' : 'text-rose-700'}">${a.status === 'present' ? 'حاضر' : 'غائب'}</td>
+                        <td class="py-3 px-4">${escapeHTML(a.behaviorNote)}</td>
+                        <td class="py-3 px-4 text-left">
+                            <button type="button" onclick="deleteAttendanceRecord('${a.id}')" class="text-rose-600 hover:text-rose-800 font-bold"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            const starsGrid = document.getElementById('dash-stars-grid');
+            starsGrid.innerHTML = state.stars.map(star => {
+                const st = getStudentByCode(star.studentCode);
+                return `
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-black text-gold-700">${escapeHTML(star.subject)}</span>
+                            <button type="button" onclick="deleteStarRecord('${star.id}')" class="text-rose-500 hover:text-rose-700 text-xs"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        <p class="text-sm font-black text-navy-900">${escapeHTML(st ? st.name : 'طالب')}</p>
+                        <p class="text-xs text-slate-600">${escapeHTML(star.reason)}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function handleAddGrade(e) {
+            e.preventDefault();
+            if (state.gradingLocked) {
+                showToast('رصد الدرجات مغلق حالياً بقرار من إدارة المدرسة', 'error');
+                return;
+            }
+            const studentCode = document.getElementById('grd-student-code').value;
+            if (!studentCode) {
+                showToast('يرجى اختيار طالب من الصف المحدد', 'error');
+                return;
+            }
+
+            state.grades.unshift({
+                id: 'grd-' + Date.now(),
+                studentCode,
+                subject: document.getElementById('grd-subject').value,
+                type: document.getElementById('grd-type').value,
+                title: document.getElementById('grd-title').value.trim(),
+                score: parseFloat(document.getElementById('grd-score').value),
+                maxScore: parseFloat(document.getElementById('grd-max').value),
+                status: document.getElementById('grd-status').value,
+                teacherName: currentTeacherSession ? currentTeacherSession.name : 'معلم المادة',
+                date: TODAY_ISO
+            });
+            saveState();
+            logTeacherActivity('رصد درجة تقييم');
+            document.getElementById('grd-title').value = '';
+            document.getElementById('grd-score').value = '';
+            refreshTeacherDashboard();
+            showToast('تم اعتماد وحفظ الدرجة بنجاح');
+        }
+
+        async function handleGradeSheetOcrUpload(e) {
+            const file = e.target.files && e.target.files[0];
+            const statusEl = document.getElementById('ocr-grade-status');
+            if (!file) return;
+
+            if (statusEl) statusEl.textContent = 'جاري تحليل صورة الكشف واستخراج الأسماء والدرجات...';
+            try {
+                if (!window.Tesseract) throw new Error('Tesseract unavailable');
+                const res = await window.Tesseract.recognize(file, 'ara+eng');
+                const lines = (res.data.text || '').split('\n').map(l => convertArabicDigitsToEnglish(l).trim()).filter(Boolean);
+
+                const allowedStudents = getFilteredStudentsForTeacher('ALL');
+                pendingOcrGradeRows = [];
+
+                lines.forEach(line => {
+                    const numMatch = line.match(/(\d+(?:\.\d+)?)/);
+                    if (!numMatch) return;
+                    const scoreVal = parseFloat(numMatch[1]);
+                    const normLine = normalizeArabicText(line);
+                    const matched = allowedStudents.find(st => {
+                        const firstTwo = normalizeArabicText(st.name).split(' ').slice(0, 2).join(' ');
+                        return firstTwo && normLine.includes(firstTwo);
+                    });
+                    if (matched && !pendingOcrGradeRows.some(r => r.studentCode === matched.code)) {
+                        pendingOcrGradeRows.push({
+                            studentCode: matched.code,
+                            studentName: matched.name,
+                            score: scoreVal,
+                            maxScore: 10
+                        });
+                    }
+                });
+
+                if (pendingOcrGradeRows.length === 0) {
+                    if (statusEl) statusEl.textContent = 'لم يتم التعرف على أسماء مطابقة في الصورة؛ يمكنك إدخال الدرجات يدوياً.';
+                    showToast('لم يتم التعرف على أسماء طلاب مطابقة في الصورة', 'error');
+                    return;
+                }
+
+                if (statusEl) statusEl.textContent = `تم استخراج ${pendingOcrGradeRows.length} درجة للمراجعة:`;
+                const tbody = document.getElementById('ocr-grade-preview-tbody');
+                tbody.innerHTML = pendingOcrGradeRows.map((row, idx) => `
+                    <tr>
+                        <td class="py-2 px-3 font-black text-navy-900">${escapeHTML(row.studentName)}</td>
+                        <td class="py-2 px-3"><input type="number" step="0.5" value="${row.score}" onchange="pendingOcrGradeRows[${idx}].score=parseFloat(this.value)||0" class="w-full rounded-lg border border-slate-300 px-2 py-1 text-center font-black"></td>
+                        <td class="py-2 px-3"><input type="number" step="0.5" value="${row.maxScore}" onchange="pendingOcrGradeRows[${idx}].maxScore=parseFloat(this.value)||10" class="w-full rounded-lg border border-slate-300 px-2 py-1 text-center font-black"></td>
+                    </tr>
+                `).join('');
+                document.getElementById('ocr-grade-preview-box').classList.remove('hidden');
+            } catch (err) {
+                console.error(err);
+                if (statusEl) statusEl.textContent = 'تعذرت قراءة الصورة تلقائياً.';
+            } finally {
+                e.target.value = '';
+            }
+        }
+
+        function commitOcrGrades() {
+            if (state.gradingLocked) {
+                showToast('رصد الدرجات مغلق حالياً', 'error');
+                return;
+            }
+            const subject = document.getElementById('grd-subject').value;
+            pendingOcrGradeRows.forEach(row => {
+                state.grades.unshift({
+                    id: 'grd-' + Date.now() + Math.random().toString(36).slice(2, 5),
+                    studentCode: row.studentCode,
+                    subject,
+                    type: 'تقييم من كشف ورقي',
+                    title: 'رصد كشف الدرجات',
+                    score: row.score,
+                    maxScore: row.maxScore,
+                    status: 'ممتاز ومكتمل',
+                    teacherName: currentTeacherSession ? currentTeacherSession.name : 'معلم المادة',
+                    date: TODAY_ISO
+                });
+            });
+            pendingOcrGradeRows = [];
+            saveState();
+            document.getElementById('ocr-grade-preview-box').classList.add('hidden');
+            refreshTeacherDashboard();
+            showToast('تم اعتماد الدرجات المستخرجة من الكشف بنجاح');
+        }
+
+        function deleteGradeRecord(id) {
+            if (state.gradingLocked && !currentAdminSession) {
+                showToast('رصد وتعديل الدرجات مغلق حالياً بقرار من الإدارة', 'error');
+                return;
+            }
+            state.grades = state.grades.filter(g => g.id !== id);
+            saveState();
+            if (currentTeacherSession) refreshTeacherDashboard();
+            if (currentAdminSession) refreshManagerDashboard();
+            showToast('تم حذف سجل الدرجة');
+        }
+
+        function handleAddAttendanceAndBehavior(e) {
+            e.preventDefault();
+            const studentCode = document.getElementById('att-student-code').value;
+            if (!studentCode) {
+                showToast('يرجى اختيار طالب من الصف المحدد', 'error');
+                return;
+            }
+
+            state.attendance.unshift({
+                id: 'att-' + Date.now(),
+                studentCode,
+                subject: document.getElementById('att-subject').value,
+                date: document.getElementById('att-date').value,
+                status: document.getElementById('att-status').value,
+                behaviorType: document.getElementById('att-behavior-type').value,
+                behaviorNote: document.getElementById('att-behavior-note').value.trim(),
+                teacherName: currentTeacherSession ? currentTeacherSession.name : 'معلم المادة'
+            });
+            saveState();
+            logTeacherActivity('رصد حضور وسلوك');
+            document.getElementById('att-behavior-note').value = '';
+            refreshTeacherDashboard();
+            showToast('تم حفظ سجل الحضور والسلوك بنجاح');
+        }
+
+        function deleteAttendanceRecord(id) {
+            state.attendance = state.attendance.filter(a => a.id !== id);
+            saveState();
+            if (currentTeacherSession) refreshTeacherDashboard();
+            if (currentAdminSession) refreshManagerDashboard();
+            showToast('تم حذف سجل الحضور');
+        }
+
+        function handleAddStarStudent(e) {
+            e.preventDefault();
+            const studentCode = document.getElementById('star-student-code').value;
+            if (!studentCode) {
+                showToast('يرجى اختيار طالب من الصف المحدد', 'error');
+                return;
+            }
+
+            state.stars.unshift({
+                id: 'star-' + Date.now(),
+                studentCode,
+                subject: document.getElementById('star-subject').value,
+                date: document.getElementById('star-date').value,
+                reason: document.getElementById('star-reason').value.trim(),
+                teacherName: currentTeacherSession ? currentTeacherSession.name : 'معلم المادة'
+            });
+            saveState();
+            logTeacherActivity('ترشيح طالب متميز');
+            document.getElementById('star-reason').value = '';
+            refreshTeacherDashboard();
+            renderPublicLanding();
+            showToast('تم نشر الطالب في لوحة الشرف');
+        }
+
+        function deleteStarRecord(id) {
+            state.stars = state.stars.filter(s => s.id !== id);
+            saveState();
+            if (currentTeacherSession) refreshTeacherDashboard();
+            renderPublicLanding();
+            showToast('تم حذف الترشيح من لوحة الشرف');
+        }
+
+        // =========================================================================
+        // MANAGER & VICE PRINCIPAL PORTAL LOGIC (ALL 10 TABS WORKING)
+        // =========================================================================
+        function handleManagerLogin(e) {
+            e.preventDefault();
+            const name = document.getElementById('m-login-name').value.trim();
+            const pin = document.getElementById('m-login-pin').value.trim();
+            const email = document.getElementById('m-login-email').value.trim();
+
+            if (pin !== state.securityPins.managerPin) {
+                showToast('الرقم السري للمدير غير صحيح', 'error');
+                return;
+            }
+
+            currentAdminSession = { name, email, role: 'مدير المدرسة' };
+            openAdminDashboard();
+            showToast(`مرحباً بك يا أ. ${name} في بوابة المدير`);
+        }
+
+        function handleVicePrincipalLogin(e) {
+            e.preventDefault();
+            const name = document.getElementById('vp-login-name').value.trim();
+            const pin = document.getElementById('vp-login-pin').value.trim();
+            const email = document.getElementById('vp-login-email').value.trim();
+
+            if (pin !== state.securityPins.managerPin) {
+                showToast('الرقم السري للوكيل غير صحيح', 'error');
+                return;
+            }
+
+            currentAdminSession = { name, email, role: 'وكيل المدرسة' };
+            openAdminDashboard();
+            showToast(`مرحباً بك يا أ. ${name} في بوابة الوكيل`);
+        }
+
+        function openAdminDashboard() {
+            document.getElementById('admin-auth-container').classList.add('hidden');
+            document.getElementById('manager-dashboard-box').classList.remove('hidden');
+            document.getElementById('dash-manager-name').textContent = currentAdminSession.name;
+            document.getElementById('dash-manager-role-badge').textContent = currentAdminSession.role;
+            document.getElementById('dash-manager-email').textContent = currentAdminSession.email;
+
+            document.getElementById('exc-date').value = TODAY_ISO;
+            document.getElementById('cert-date').value = TODAY_ISO;
+
+            const builder = document.getElementById('sch-rows-builder');
+            if (builder && builder.children.length === 0) {
+                addScheduleRowInput();
+            }
+
+            switchManagerTab('overview');
+        }
+
+        function logoutManager() {
+            currentAdminSession = null;
+            document.getElementById('manager-dashboard-box').classList.add('hidden');
+            document.getElementById('admin-auth-container').classList.remove('hidden');
+            document.getElementById('m-login-pin').value = '';
+            document.getElementById('vp-login-pin').value = '';
+            showToast('تم تسجيل الخروج من البوابة الإدارية');
+        }
+
+        function switchManagerTab(tabName) {
+            const tabs = ['overview', 'students', 'poems', 'announcements', 'messages', 'schedules', 'excuses', 'certificates', 'reports', 'records'];
+            tabs.forEach(t => {
+                const panel = document.getElementById(`mgr-tab-${t}`);
+                const btn = document.getElementById(`mgr-tab-btn-${t}`);
+                if (panel) panel.classList.toggle('hidden', t !== tabName);
+                if (btn) {
+                    btn.className = t === tabName
+                        ? 'mgr-tab-btn bg-navy-900 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition'
+                        : 'mgr-tab-btn bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 font-extrabold px-4 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition';
+                }
+            });
+            refreshManagerDashboard();
+        }
+
+        function refreshManagerDashboard() {
+            document.getElementById('mgr-stat-students').textContent = state.students.length;
+            document.getElementById('mgr-stat-grades').textContent = state.grades.length;
+            document.getElementById('mgr-stat-attendance').textContent = state.attendance.length;
+            document.getElementById('mgr-stat-stars').textContent = state.stars.length + state.broadcasts.length;
+
+            const currentGamePinBadge = document.getElementById('sec-current-game-pin-badge');
+            if (currentGamePinBadge) {
+                currentGamePinBadge.textContent = getSecretGamePin();
+            }
+
+            const lockLabel = document.getElementById('grading-lock-label');
+            if (lockLabel) {
+                lockLabel.textContent = state.gradingLocked
+                    ? 'رصد الدرجات مغلق حالياً (فتح الرصد للمدرسين)'
+                    : 'رصد الدرجات مفتوح (إغلاق الرصد)';
+            }
+
+            // Overview Broadcasts
+            const ovBcList = document.getElementById('mgr-overview-broadcasts-list');
+            if (ovBcList) {
+                ovBcList.innerHTML = state.broadcasts.map(bc => `
+                    <div class="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-200 flex items-center justify-between gap-2 text-xs">
+                        <div>
+                            <span class="font-black text-indigo-900 ml-2">[${escapeHTML(bc.grade)}]</span>
+                            <span class="font-bold text-slate-800">${escapeHTML(bc.topic)}</span>
+                        </div>
+                        <button type="button" onclick="deleteBroadcastRecord('${bc.id}')" class="text-rose-600 hover:text-rose-800 font-bold shrink-0"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `).join('');
+            }
+
+            // Teacher Activity Log
+            const actTbody = document.getElementById('mgr-teacher-activity-tbody');
+            if (actTbody) {
+                actTbody.innerHTML = state.teacherActivity.length === 0
+                    ? `<tr><td colspan="6" class="py-6 text-center text-slate-400">لم يسجل أي معلم دخوله بعد.</td></tr>`
+                    : state.teacherActivity.map(act => `
+                        <tr>
+                            <td class="py-3 px-4 font-black text-navy-900">${escapeHTML(act.name)}</td>
+                            <td class="py-3 px-4 font-bold text-emerald-700">${escapeHTML(act.subject)}</td>
+                            <td class="py-3 px-4 font-bold text-slate-700">${escapeHTML(act.grades || 'جميع الصفوف')}</td>
+                            <td class="py-3 px-4 font-mono" dir="ltr">${escapeHTML(act.email)}</td>
+                            <td class="py-3 px-4">${escapeHTML(act.loginTime)}</td>
+                            <td class="py-3 px-4 font-bold text-slate-600">${escapeHTML(act.lastAction)}</td>
+                        </tr>
+                    `).join('');
+            }
+
+            // Students Table
+            const searchQ = normalizeArabicText(document.getElementById('mgr-search-student')?.value || '');
+            const filteredStudents = state.students.filter(st =>
+                !searchQ || normalizeArabicText(st.name).includes(searchQ) || String(st.code).includes(searchQ)
+            );
+            const stTbody = document.getElementById('mgr-students-tbody');
+            if (stTbody) {
+                stTbody.innerHTML = filteredStudents.map(st => `
+                    <tr>
+                        <td class="py-3 px-4 font-black text-navy-900">${escapeHTML(st.name)}</td>
+                        <td class="py-3 px-4 font-bold text-slate-600">${escapeHTML(st.grade)}</td>
+                        <td class="py-3 px-4 font-mono font-black text-emerald-700" dir="ltr">${escapeHTML(st.code)}</td>
+                        <td class="py-3 px-4 text-left">
+                            <button type="button" onclick="deleteStudentRecord('${st.code}')" class="text-rose-600 hover:text-rose-800 font-bold"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // Poems Moderation List
+            const pendingPoemsCount = state.poems.filter(p => !p.approved).length;
+            const poemsBadge = document.getElementById('mgr-pending-poems-badge');
+            if (poemsBadge) {
+                poemsBadge.textContent = pendingPoemsCount;
+                poemsBadge.classList.toggle('hidden', pendingPoemsCount === 0);
+            }
+            const poemsList = document.getElementById('mgr-poems-list');
+            if (poemsList) {
+                poemsList.innerHTML = state.poems.length === 0
+                    ? `<p class="text-xs text-slate-400">لا توجد قصائد مرسلة حالياً.</p>`
+                    : state.poems.map(p => `
+                        <div class="p-4 rounded-2xl border ${p.approved ? 'border-emerald-200 bg-emerald-50/40' : 'border-purple-200 bg-purple-50/40'} space-y-2">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div>
+                                    <span class="text-xs font-black text-navy-900">${escapeHTML(p.title)}</span>
+                                    <span class="text-[11px] font-bold text-slate-600 mr-2">— الطالب: ${escapeHTML(p.author)} (${escapeHTML(p.grade)})</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    ${p.approved
+                                        ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2.5 py-1 rounded-full">منشورة ✓</span>`
+                                        : `<button type="button" onclick="approveStudentPoem('${p.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black px-3 py-1 rounded-xl text-xs">اعتماد ونشر</button>`}
+                                    <button type="button" onclick="deleteStudentPoem('${p.id}')" class="bg-rose-100 hover:bg-rose-200 text-rose-800 font-black px-3 py-1 rounded-xl text-xs">حذف</button>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-700 whitespace-pre-line bg-white p-3 rounded-xl border border-slate-200/70">${escapeHTML(p.content)}</p>
+                        </div>
+                    `).join('');
+            }
+
+            // Populate Admin Student Dropdowns
+            const studentOptionsHtml = state.students.map(s => `<option value="${escapeHTML(s.code)}">${escapeHTML(s.name)} — (${escapeHTML(s.grade)})</option>`).join('');
+            ['alert-student-code', 'exc-student-code', 'cert-student-code'].forEach(selId => {
+                const el = document.getElementById(selId);
+                if (el) el.innerHTML = studentOptionsHtml;
+            });
+            autoFillCertGrade();
+
+            // Announcements & Targeted Alerts
+            const mgrAnnList = document.getElementById('mgr-announcements-list');
+            if (mgrAnnList) {
+                mgrAnnList.innerHTML = state.announcements.map(ann => `
+                    <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-2 text-xs">
+                        <div>
+                            <span class="font-black text-navy-900">${escapeHTML(ann.title)}:</span>
+                            <span class="text-slate-600">${escapeHTML(ann.body)}</span>
+                        </div>
+                        <button type="button" onclick="deleteAnnouncement('${ann.id}')" class="text-rose-600 hover:text-rose-800 font-bold"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `).join('');
+            }
+
+            const mgrAlertsList = document.getElementById('mgr-parent-alerts-list');
+            if (mgrAlertsList) {
+                const alertEntries = Object.entries(state.parentAlerts);
+                mgrAlertsList.innerHTML = alertEntries.length === 0
+                    ? `<p class="text-xs text-slate-400">لا توجد تنبيهات خاصة مفعلة حالياً.</p>`
+                    : alertEntries.map(([code, data]) => {
+                        const st = getStudentByCode(code);
+                        return `
+                            <div class="p-3.5 rounded-2xl bg-rose-50/70 border border-rose-200 flex items-center justify-between gap-2 text-xs">
+                                <div>
+                                    <span class="font-black text-rose-900">${escapeHTML(st ? st.name : code)}:</span>
+                                    <span class="text-rose-800 font-bold">${escapeHTML(data.message)}</span>
+                                </div>
+                                <button type="button" onclick="deleteParentAlert('${code}')" class="text-rose-700 hover:text-rose-950 font-bold"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        `;
+                    }).join('');
+            }
+
+            // Parent Messages Inbox
+            const unreadCount = state.parentMessages.filter(m => !m.adminReply).length;
+            const msgBadge = document.getElementById('mgr-unread-msg-badge');
+            if (msgBadge) {
+                msgBadge.textContent = unreadCount;
+                msgBadge.classList.toggle('hidden', unreadCount === 0);
+            }
+            const msgFilter = document.getElementById('mgr-msg-filter')?.value || 'all';
+            const filteredMsgs = state.parentMessages.filter(m => {
+                if (msgFilter === 'pending') return !m.adminReply;
+                if (msgFilter === 'replied') return Boolean(m.adminReply);
+                return true;
+            });
+            const msgList = document.getElementById('mgr-parent-messages-list');
+            if (msgList) {
+                msgList.innerHTML = filteredMsgs.length === 0
+                    ? `<p class="text-xs text-slate-400">لا توجد رسائل مطابقة للتصفية الحالية.</p>`
+                    : filteredMsgs.map(m => {
+                        const st = getStudentByCode(m.studentCode);
+                        return `
+                            <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50 space-y-2.5 text-xs">
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <div>
+                                        <span class="font-black text-navy-900">ولي أمر الطالب: ${escapeHTML(st ? st.name : m.studentCode)}</span>
+                                        <span class="text-slate-500 mr-2">(${escapeHTML(m.senderName)} — ${escapeHTML(m.topic)})</span>
+                                    </div>
+                                    <span class="font-mono text-slate-400">${escapeHTML(m.date)}</span>
+                                </div>
+                                <p class="font-bold text-slate-800 bg-white p-3 rounded-xl border border-slate-200">${escapeHTML(m.body)}</p>
+                                ${m.adminReply
+                                    ? `<div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950 font-black">الرد المرسل: ${escapeHTML(m.adminReply)}</div>`
+                                    : `<form onsubmit="handleReplyParentMessage(event, '${m.id}')" class="flex gap-2">
+                                        <input type="text" id="reply-input-${m.id}" required placeholder="اكتب رد الإدارة الرسمي هنا..." class="flex-1 rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold">
+                                        <button type="submit" class="bg-navy-900 text-white font-black px-4 py-2 rounded-xl text-xs">إرسال الرد</button>
+                                      </form>`}
+                            </div>
+                        `;
+                    }).join('');
+            }
+
+            // Schedules List
+            const schList = document.getElementById('mgr-schedules-list');
+            if (schList) {
+                schList.innerHTML = state.schedules.length === 0
+                    ? `<p class="text-xs text-slate-400">لا توجد جداول منشورة حالياً.</p>`
+                    : state.schedules.map(sch => `
+                        <div class="p-4 rounded-2xl border border-teal-200 bg-teal-50/40 space-y-2 text-xs">
+                            <div class="flex items-center justify-between">
+                                <span class="font-black text-teal-950">[${escapeHTML(sch.grade)}] ${escapeHTML(sch.type)} — ${escapeHTML(sch.title)}</span>
+                                <button type="button" onclick="deleteSchedule('${sch.id}')" class="text-rose-600 hover:text-rose-800 font-bold"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            <p class="text-slate-600 font-bold">عدد البنود: ${sch.rows.length}</p>
+                        </div>
+                    `).join('');
+            }
+
+            // Excuses Table
+            const excTbody = document.getElementById('mgr-excuses-tbody');
+            if (excTbody) {
+                excTbody.innerHTML = state.excuses.length === 0
+                    ? `<tr><td colspan="7" class="py-5 text-center text-slate-400">لا توجد أعذار رسمية مسجلة حالياً.</td></tr>`
+                    : state.excuses.map(ex => {
+                        const st = getStudentByCode(ex.studentCode);
+                        return `
+                            <tr>
+                                <td class="py-3 px-4 font-black text-navy-900">${escapeHTML(st ? st.name : ex.studentCode)}</td>
+                                <td class="py-3 px-4 font-bold text-slate-600">${escapeHTML(st ? st.grade : '')}</td>
+                                <td class="py-3 px-4 font-mono">${escapeHTML(ex.date)}</td>
+                                <td class="py-3 px-4 font-bold text-purple-700">${escapeHTML(ex.type)}</td>
+                                <td class="py-3 px-4">${escapeHTML(ex.reason)}</td>
+                                <td class="py-3 px-4 text-slate-500">${escapeHTML(ex.approvedBy)}</td>
+                                <td class="py-3 px-4 text-left"><button type="button" onclick="deleteExcuse('${ex.id}')" class="text-rose-600 font-bold"><i class="fa-solid fa-trash"></i></button></td>
+                            </tr>
+                        `;
+                    }).join('');
+            }
+
+            // Tab 10 Records Audit Tables
+            const mgrGrdTbody = document.getElementById('mgr-grades-tbody');
+            if (mgrGrdTbody) {
+                mgrGrdTbody.innerHTML = state.grades.map(g => {
+                    const st = getStudentByCode(g.studentCode);
+                    return `
+                        <tr>
+                            <td class="py-3 px-4 font-black text-navy-900">${escapeHTML(st ? st.name : g.studentCode)}</td>
+                            <td class="py-3 px-4">${escapeHTML(g.subject)} — ${escapeHTML(g.title)}</td>
+                            <td class="py-3 px-4 font-mono font-black text-emerald-700" dir="ltr">${g.score}/${g.maxScore}</td>
+                            <td class="py-3 px-4">${escapeHTML(g.teacherName)}</td>
+                            <td class="py-3 px-4 text-left"><button type="button" onclick="deleteGradeRecord('${g.id}')" class="text-rose-600 font-bold"><i class="fa-solid fa-trash"></i></button></td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            const mgrAttTbody = document.getElementById('mgr-att-tbody');
+            if (mgrAttTbody) {
+                mgrAttTbody.innerHTML = state.attendance.map(a => {
+                    const st = getStudentByCode(a.studentCode);
+                    return `
+                        <tr>
+                            <td class="py-3 px-4 font-black text-navy-900">${escapeHTML(st ? st.name : a.studentCode)}</td>
+                            <td class="py-3 px-4">${escapeHTML(a.subject)} (${escapeHTML(a.date)})</td>
+                            <td class="py-3 px-4">${a.status === 'present' ? 'حاضر' : 'غائب'} — ${escapeHTML(a.behaviorNote)}</td>
+                            <td class="py-3 px-4">${escapeHTML(a.teacherName)}</td>
+                            <td class="py-3 px-4 text-left"><button type="button" onclick="deleteAttendanceRecord('${a.id}')" class="text-rose-600 font-bold"><i class="fa-solid fa-trash"></i></button></td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            const mgrBcTbody = document.getElementById('mgr-bc-tbody');
+            if (mgrBcTbody) {
+                mgrBcTbody.innerHTML = state.broadcasts.map(bc => `
+                    <tr>
+                        <td class="py-3 px-4 font-black text-indigo-800">${escapeHTML(bc.grade)}</td>
+                        <td class="py-3 px-4 font-bold text-navy-900">${escapeHTML(bc.topic)}</td>
+                        <td class="py-3 px-4 text-emerald-700 font-bold">${escapeHTML(bc.approvedBy || 'إدارة المدرسة')}</td>
+                        <td class="py-3 px-4 text-left"><button type="button" onclick="deleteBroadcastRecord('${bc.id}')" class="text-rose-600 font-bold"><i class="fa-solid fa-trash"></i></button></td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function toggleGradingLock() {
+            state.gradingLocked = !state.gradingLocked;
+            saveState();
+            refreshManagerDashboard();
+            showToast(state.gradingLocked ? 'تم إغلاق رصد الدرجات للمدرسين' : 'تم فتح رصد الدرجات للمدرسين');
+        }
+
+        function handleAdminAssignBroadcast(e) {
+            e.preventDefault();
+            const grade = document.getElementById('mgr-bc-grade').value;
+            const topic = document.getElementById('mgr-bc-topic').value.trim();
+            if (!topic) return;
+
+            state.broadcasts.unshift({
+                id: 'bc-' + Date.now(),
+                grade,
+                topic,
+                approvedBy: currentAdminSession ? `${currentAdminSession.role}: ${currentAdminSession.name}` : 'إدارة المدرسة'
+            });
+            saveState();
+            document.getElementById('mgr-bc-topic').value = '';
+            refreshManagerDashboard();
+            renderPublicLanding();
+            showToast('تم اعتماد الإذاعة المدرسية ونشرها رسمياً');
+        }
+
+        function deleteBroadcastRecord(id) {
+            state.broadcasts = state.broadcasts.filter(b => b.id !== id);
+            saveState();
+            refreshManagerDashboard();
+            renderPublicLanding();
+            showToast('تم حذف الإذاعة المدرسية');
+        }
+
+        // =========================================================================
+        // PDF STUDENT ROSTER UPLOAD, PARSING & EDITABLE PREVIEW TABLE
+        // =========================================================================
+        function convertArabicDigitsToEnglish(str) {
+            const map = { '٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9',
+                          '۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9' };
+            return String(str || '').replace(/[٠-٩۰-۹]/g, ch => map[ch] || ch);
+        }
+
+        function generateUniqueStudentCode(usedCodesSet) {
+            let candidate = '';
+            do {
+                candidate = String(Math.floor(340000000 + Math.random() * 59999999));
+            } while (usedCodesSet.has(candidate) || state.students.some(s => String(s.code) === candidate));
+            usedCodesSet.add(candidate);
+            return candidate;
+        }
+
+        function detectGradeFromTextLine(line, fallbackGrade) {
+            const norm = normalizeArabicText(line);
+            if (/kg\s*1|كي\s*جي\s*1|تمهيدي/i.test(norm)) return 'KG 1';
+            if (/kg\s*2|كي\s*جي\s*2|بستان/i.test(norm)) return 'KG 2';
+            for (const g of ALL_SCHOOL_GRADES) {
+                if (norm.includes(normalizeArabicText(g))) return g;
+            }
+            return fallbackGrade;
+        }
+
+        function parseRosterLinesFromPdfItems(pageItems, defaultGrade) {
+            const rowsByY = [];
+            pageItems.forEach(item => {
+                const str = (item.str || '').trim();
+                if (!str) return;
+                const y = Math.round(item.transform[5] / 6) * 6;
+                const x = item.transform[4];
+                let bucket = rowsByY.find(b => Math.abs(b.y - y) <= 6);
+                if (!bucket) {
+                    bucket = { y, cells: [] };
+                    rowsByY.push(bucket);
+                }
+                bucket.cells.push({ x, str });
+            });
+
+            rowsByY.sort((a, b) => b.y - a.y);
+
+            const extracted = [];
+            const usedCodes = new Set();
+            let currentDetectedGrade = defaultGrade;
+
+            const headerNoiseRegex = /^(م|مسلسل|الاسم|اسم الطالب|الاسم الرباعي|الكود|كود الطالب|الصف|الفصل|ملاحظات|مدرسة الزهراء|كشف|بيان|توقيع|الرقم القومي)$/i;
+
+            rowsByY.forEach(row => {
+                row.cells.sort((a, b) => b.x - a.x);
+                const fullLine = convertArabicDigitsToEnglish(row.cells.map(c => c.str).join(' ')).replace(/\s+/g, ' ').trim();
+                if (!fullLine) return;
+
+                if (fullLine.includes('الصف') || /kg\s*[12]/i.test(fullLine)) {
+                    currentDetectedGrade = detectGradeFromTextLine(fullLine, currentDetectedGrade);
+                }
+
+                const codeMatches = fullLine.match(/\b\d{5,14}\b/g);
+                const explicitCode = codeMatches ? codeMatches[codeMatches.length - 1] : '';
+
+                let nameCandidate = fullLine
+                    .replace(/^\d+\s*[-.)]?\s*/, '')
+                    .replace(/\b\d{5,14}\b/g, '')
+                    .replace(/الصف\s+\S+\s+\S+/g, '')
+                    .replace(/[^\u0600-\u06FF\s]/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+
+                if (!nameCandidate || headerNoiseRegex.test(nameCandidate)) return;
+                const words = nameCandidate.split(' ').filter(w => w.length >= 2);
+                if (words.length < 2) return;
+
+                const cleanName = words.slice(0, 5).join(' ');
+                const finalCode = explicitCode && !usedCodes.has(explicitCode)
+                    ? (usedCodes.add(explicitCode), explicitCode)
+                    : generateUniqueStudentCode(usedCodes);
+
+                extracted.push({
+                    name: cleanName,
+                    code: finalCode,
+                    grade: currentDetectedGrade
+                });
+            });
+
+            return extracted;
+        }
+
+        async function handleRosterPdfUpload(e) {
+            const file = e.target.files && e.target.files[0];
+            const statusLabel = document.getElementById('roster-pdf-status-label');
+            const defaultGrade = document.getElementById('roster-pdf-default-grade').value;
+            if (!file) return;
+
+            if (statusLabel) statusLabel.textContent = `جاري قراءة وتحليل ملف الكشف: ${file.name}...`;
+
+            try {
+                if (!window.pdfjsLib) throw new Error('PDF.js unavailable');
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let allExtracted = [];
+
+                for (let p = 1; p <= pdf.numPages; p++) {
+                    const page = await pdf.getPage(p);
+                    const content = await page.getTextContent();
+                    const pageRows = parseRosterLinesFromPdfItems(content.items, defaultGrade);
+                    allExtracted = allExtracted.concat(pageRows);
+                }
+
+                if (allExtracted.length === 0) {
+                    if (statusLabel) statusLabel.textContent = `الملف (${file.name}) لا يحتوي على نص قابل للاستخراج (قد يكون مصوراً/سكانر).`;
+                    showToast('لم يتم العثور على نصوص داخل الـ PDF. يمكنك إضافة الصفوف يدوياً في جدول المعاينة بالأسفل', 'error');
+                    pendingPdfRosterRows = [{ name: '', code: generateUniqueStudentCode(new Set()), grade: defaultGrade }];
+                    renderRosterPdfPreviewTable();
+                    return;
+                }
+
+                pendingPdfRosterRows = allExtracted;
+                if (statusLabel) statusLabel.textContent = `تم استخراج ${allExtracted.length} طالب بنجاح من (${file.name})`;
+                renderRosterPdfPreviewTable();
+                showToast(`تمت قراءة الملف واستخراج ${allExtracted.length} طالب للمراجعة`);
+            } catch (err) {
+                console.error('Roster PDF parse error:', err);
+                if (statusLabel) statusLabel.textContent = `تعذرت قراءة الملف (${file.name}).`;
+                showToast('حدث خطأ أثناء قراءة ملف PDF. تأكد من سلامة الملف.', 'error');
+            } finally {
+                e.target.value = '';
+            }
+        }
+
+        function renderRosterPdfPreviewTable() {
+            const box = document.getElementById('roster-pdf-preview-box');
+            const tbody = document.getElementById('roster-pdf-preview-tbody');
+            const countLabel = document.getElementById('roster-pdf-preview-count');
+            if (!box || !tbody) return;
+
+            box.classList.remove('hidden');
+            if (countLabel) {
+                countLabel.textContent = `معاينة الطلاب المستخرجين من الملف (${pendingPdfRosterRows.length} طالب) — يمكنك التعديل قبل الاعتماد`;
+            }
+
+            tbody.innerHTML = pendingPdfRosterRows.map((row, idx) => `
+                <tr>
+                    <td class="py-2 px-3 font-mono font-bold text-slate-400">${idx + 1}</td>
+                    <td class="py-2 px-3">
+                        <input type="text" value="${escapeHTML(row.name)}" onchange="updatePreviewRosterRow(${idx}, 'name', this.value)" placeholder="الاسم الرباعي للطالب" class="w-full rounded-lg border border-slate-300 bg-slate-50 px-2.5 py-1.5 text-xs font-bold text-navy-900">
+                    </td>
+                    <td class="py-2 px-3">
+                        <input type="text" value="${escapeHTML(row.code)}" onchange="updatePreviewRosterRow(${idx}, 'code', this.value)" dir="ltr" class="w-full rounded-lg border border-slate-300 bg-slate-50 px-2.5 py-1.5 text-center text-xs font-mono font-black text-emerald-800">
+                    </td>
+                    <td class="py-2 px-3">
+                        <select onchange="updatePreviewRosterRow(${idx}, 'grade', this.value)" class="w-full rounded-lg border border-slate-300 bg-slate-50 px-2 py-1.5 text-xs font-bold text-slate-800">
+                            ${ALL_SCHOOL_GRADES.map(g => `<option value="${escapeHTML(g)}" ${row.grade === g ? 'selected' : ''}>${escapeHTML(g)}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td class="py-2 px-3 text-left">
+                        <button type="button" onclick="removePreviewRosterRow(${idx})" class="text-rose-600 hover:text-rose-800 font-bold px-2 py-1" title="حذف الصف">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updatePreviewRosterRow(index, field, value) {
+            if (!pendingPdfRosterRows[index]) return;
+            pendingPdfRosterRows[index][field] = value.trim();
+        }
+
+        function removePreviewRosterRow(index) {
+            pendingPdfRosterRows.splice(index, 1);
+            if (pendingPdfRosterRows.length === 0) {
+                clearRosterPdfPreview();
+            } else {
+                renderRosterPdfPreviewTable();
+            }
+        }
+
+        function addEmptyPreviewRosterRow() {
+            const defaultGrade = document.getElementById('roster-pdf-default-grade').value;
+            const used = new Set(pendingPdfRosterRows.map(r => r.code));
+            pendingPdfRosterRows.push({
+                name: '',
+                code: generateUniqueStudentCode(used),
+                grade: defaultGrade
+            });
+            renderRosterPdfPreviewTable();
+        }
+
+        function clearRosterPdfPreview() {
+            pendingPdfRosterRows = [];
+            const box = document.getElementById('roster-pdf-preview-box');
+            if (box) box.classList.add('hidden');
+            const statusLabel = document.getElementById('roster-pdf-status-label');
+            if (statusLabel) statusLabel.textContent = 'لم يتم اختيار ملف PDF بعد';
+        }
+
+        function commitExtractedPdfRoster() {
+            let addedCount = 0;
+            let updatedCount = 0;
+
+            pendingPdfRosterRows.forEach(row => {
+                const cleanName = (row.name || '').trim();
+                const cleanCode = (row.code || '').trim();
+                const cleanGrade = row.grade || 'الرابع الابتدائي';
+                if (!cleanName || !cleanCode) return;
+
+                const existingByCode = state.students.find(s => String(s.code) === cleanCode);
+                if (existingByCode) {
+                    existingByCode.name = cleanName;
+                    existingByCode.grade = cleanGrade;
+                    updatedCount++;
+                } else {
+                    state.students.push({
+                        code: cleanCode,
+                        name: cleanName,
+                        grade: cleanGrade
+                    });
+                    addedCount++;
+                }
+            });
+
+            if (addedCount === 0 && updatedCount === 0) {
+                showToast('يرجى التأكد من كتابة اسم الطالب وكوده في صف واحد على الأقل قبل الاعتماد', 'error');
+                return;
+            }
+
+            saveState();
+            clearRosterPdfPreview();
+            refreshManagerDashboard();
+            showToast(`تم اعتماد الكشف بنجاح: إضافة ${addedCount} طالب وتحديث ${updatedCount} طالب`);
+        }
+
+        function deleteStudentRecord(code) {
+            state.students = state.students.filter(s => String(s.code) !== String(code));
+            saveState();
+            refreshManagerDashboard();
+            showToast('تم حذف الطالب من الكشف');
+        }
+
+        function printInternalRosterDirect() {
+            switchManagerTab('reports');
+            document.getElementById('report-type-select').value = 'roster_internal';
+            document.getElementById('report-grade-select').value = 'ALL';
+            generateOfficialReport();
+            setTimeout(() => window.print(), 250);
+        }
+
+        // Poems Moderation Actions
+        function approveStudentPoem(id) {
+            const p = state.poems.find(item => item.id === id);
+            if (p) {
+                p.approved = true;
+                saveState();
+                refreshManagerDashboard();
+                renderPublicLanding();
+                showToast('تم اعتماد القصيدة ونشرها في واحة الشعر والأدب');
+            }
+        }
+
+        function deleteStudentPoem(id) {
+            state.poems = state.poems.filter(item => item.id !== id);
+            saveState();
+            refreshManagerDashboard();
+            renderPublicLanding();
+            showToast('تم حذف القصيدة');
+        }
+
+        // Announcements & Parent Alerts
+        function handleAddAnnouncement(e) {
+            e.preventDefault();
+            const title = document.getElementById('ann-title').value.trim();
+            const priority = document.getElementById('ann-priority').value;
+            const body = document.getElementById('ann-body').value.trim();
+            if (!title || !body) return;
+
+            state.announcements.unshift({
+                id: 'ann-' + Date.now(),
+                title,
+                priority,
+                body,
+                date: TODAY_ISO
+            });
+            saveState();
+            document.getElementById('ann-title').value = '';
+            document.getElementById('ann-body').value = '';
+            refreshManagerDashboard();
+            renderPublicLanding();
+            showToast('تم نشر الإعلان في لوحة إعلانات المدرسة');
+        }
+
+        function deleteAnnouncement(id) {
+            state.announcements = state.announcements.filter(a => a.id !== id);
+            saveState();
+            refreshManagerDashboard();
+            renderPublicLanding();
+            showToast('تم حذف الإعلان');
+        }
+
+        function handleSaveParentAlert(e) {
+            e.preventDefault();
+            const code = document.getElementById('alert-student-code').value;
+            const message = document.getElementById('alert-message-input').value.trim();
+            if (!code || !message) return;
+
+            state.parentAlerts[code] = {
+                message,
+                date: TODAY_ISO
+            };
+            saveState();
+            document.getElementById('alert-message-input').value = '';
+            refreshManagerDashboard();
+            showToast('تم تفعيل التنبيه الخاص لولي الأمر');
+        }
+
+        function deleteParentAlert(code) {
+            delete state.parentAlerts[code];
+            saveState();
+            refreshManagerDashboard();
+            showToast('تم إلغاء التنبيه الخاص');
+        }
+
+        function handleReplyParentMessage(e, msgId) {
+            e.preventDefault();
+            const input = document.getElementById(`reply-input-${msgId}`);
+            const replyText = input ? input.value.trim() : '';
+            if (!replyText) return;
+
+            const msg = state.parentMessages.find(m => m.id === msgId);
+            if (msg) {
+                msg.adminReply = replyText;
+                saveState();
+                refreshManagerDashboard();
+                showToast('تم إرسال رد الإدارة إلى ولي الأمر');
+            }
+        }
+
+        // Schedules Builder
+        function addScheduleRowInput() {
+            const builder = document.getElementById('sch-rows-builder');
+            if (!builder) return;
+            const row = document.createElement('div');
+            row.className = 'grid grid-cols-1 sm:grid-cols-12 gap-2 items-center bg-white p-2.5 rounded-xl border border-slate-200 sch-row-item';
+            row.innerHTML = `
+                <input type="text" placeholder="اليوم / التاريخ" required class="sm:col-span-3 rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold sch-day">
+                <input type="text" placeholder="المادة الدراسية" required class="sm:col-span-3 rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold sch-subj">
+                <input type="text" placeholder="التوقيت / الحصة" required class="sm:col-span-3 rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold sch-time">
+                <input type="text" placeholder="ملاحظات" class="sm:col-span-2 rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-bold sch-note">
+                <button type="button" onclick="this.parentElement.remove()" class="sm:col-span-1 text-rose-600 hover:text-rose-800 text-xs font-bold py-1.5"><i class="fa-solid fa-trash"></i></button>
+            `;
+            builder.appendChild(row);
+        }
+
+        function handleSaveSchedule(e) {
+            e.preventDefault();
+            const grade = document.getElementById('sch-grade').value;
+            const type = document.getElementById('sch-type').value;
+            const title = document.getElementById('sch-title').value.trim();
+
+            const rowEls = document.querySelectorAll('#sch-rows-builder .sch-row-item');
+            const rows = Array.from(rowEls).map(el => ({
+                day: el.querySelector('.sch-day').value.trim(),
+                subject: el.querySelector('.sch-subj').value.trim(),
+                time: el.querySelector('.sch-time').value.trim(),
+                note: el.querySelector('.sch-note').value.trim()
+            })).filter(r => r.day && r.subject);
+
+            if (rows.length === 0) {
+                showToast('يرجى إضافة صف واحد على الأقل للجدول', 'error');
+                return;
+            }
+
+            state.schedules.unshift({
+                id: 'sch-' + Date.now(),
+                grade,
+                type,
+                title,
+                rows
+            });
+            saveState();
+            document.getElementById('sch-title').value = '';
+            document.getElementById('sch-rows-builder').innerHTML = '';
+            addScheduleRowInput();
+            refreshManagerDashboard();
+            showToast('تم اعتماد ونشر الجدول لأولياء الأمور بنجاح');
+        }
+
+        function deleteSchedule(id) {
+            state.schedules = state.schedules.filter(s => s.id !== id);
+            saveState();
+            refreshManagerDashboard();
+            showToast('تم حذف الجدول');
+        }
+
+        // Official Excuses
+        function handleAddOfficialExcuse(e) {
+            e.preventDefault();
+            const studentCode = document.getElementById('exc-student-code').value;
+            const date = document.getElementById('exc-date').value;
+            const type = document.getElementById('exc-type').value;
+            const reason = document.getElementById('exc-reason').value.trim();
+            if (!studentCode || !date || !reason) return;
+
+            state.excuses.unshift({
+                id: 'exc-' + Date.now(),
+                studentCode,
+                date,
+                type,
+                reason,
+                approvedBy: currentAdminSession ? currentAdminSession.name : 'إدارة المدرسة'
+            });
+            saveState();
+            document.getElementById('exc-reason').value = '';
+            refreshManagerDashboard();
+            showToast('تم اعتماد وتوثيق العذر الرسمي بنجاح');
+        }
+
+        function deleteExcuse(id) {
+            state.excuses = state.excuses.filter(ex => ex.id !== id);
+            saveState();
+            refreshManagerDashboard();
+            showToast('تم حذف العذر');
+        }
+
+        // Certificates
+        function autoFillCertGrade() {
+            const code = document.getElementById('cert-student-code')?.value;
+            const st = getStudentByCode(code);
+            const gradeInput = document.getElementById('cert-student-grade');
+            if (gradeInput) gradeInput.value = st ? st.grade : '';
+        }
+
+        function generateAppreciationCertificate(e) {
+            e.preventDefault();
+            const code = document.getElementById('cert-student-code').value;
+            const st = getStudentByCode(code);
+            if (!st) return;
+
+            const date = document.getElementById('cert-date').value;
+            const reason = document.getElementById('cert-reason-select').value;
+            const note = document.getElementById('cert-custom-note').value.trim();
+
+            const out = document.getElementById('printable-certificate-output');
+            out.innerHTML = `
+                <div class="text-center space-y-6 py-4">
+                    <div class="flex items-center justify-between border-b-2 border-gold-500 pb-4 text-right">
+                        <div>
+                            <h3 class="text-lg font-black text-navy-900">مدرسة الزهراء الخاصة</h3>
+                            <p class="text-xs font-bold text-slate-600">إدارة شؤون الطلاب والأنشطة التربوية</p>
+                        </div>
+                        <div class="w-14 h-14 rounded-2xl bg-navy-900 text-gold-400 flex items-center justify-center text-2xl">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <span class="bg-gold-500/20 text-gold-700 text-xs font-black px-4 py-1 rounded-full">شهادة تقدير وتفوق</span>
+                        <h2 class="text-2xl sm:text-3xl font-black text-navy-900 pt-2">تتقدم إدارة مدرسة الزهراء الخاصة بخالص التهنئة والتقدير إلى</h2>
+                    </div>
+
+                    <div class="py-3 px-6 bg-slate-50 border-2 border-gold-500/40 rounded-2xl max-w-xl mx-auto">
+                        <p class="text-2xl font-black text-navy-950">${escapeHTML(st.name)}</p>
+                        <p class="text-sm font-bold text-emerald-700 mt-1">المقيد بالصف: ${escapeHTML(st.grade)}</p>
+                    </div>
+
+                    <p class="text-base font-extrabold text-slate-800 max-w-2xl mx-auto leading-relaxed">
+                        وذلك تقديراً لـ: <span class="text-navy-900 underline decoration-gold-500">${escapeHTML(reason)}</span>
+                        ${note ? `<br><span class="text-sm text-slate-600">${escapeHTML(note)}</span>` : ''}
+                    </p>
+
+                    <div class="pt-8 grid grid-cols-2 gap-8 text-xs font-black text-navy-900 max-w-xl mx-auto">
+                        <div>
+                            <p>تاريخ الإصدار</p>
+                            <p class="font-mono text-slate-600 mt-2">${escapeHTML(date)}</p>
+                        </div>
+                        <div>
+                            <p>يعتمد / مدير المدرسة</p>
+                            <p class="text-slate-600 mt-2">${escapeHTML(currentAdminSession ? currentAdminSession.name : 'إدارة مدرسة الزهراء الخاصة')}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            showToast('تم تصميم شهادة التقدير بنجاح وجاهزة للطباعة');
+        }
+
+        // Official Reports
+        function generateOfficialReport() {
+            const type = document.getElementById('report-type-select').value;
+            const grade = document.getElementById('report-grade-select').value;
+            const out = document.getElementById('printable-report-output');
+
+            const titles = {
+                absence: 'تقرير الغياب اليومي المعتمد',
+                honor: 'كشف لوحة شرف الطلاب المتميزين والمتفوقين',
+                negative_behavior: 'كشف السلوكيات السلبية للمتابعة التربوية',
+                roster_internal: 'كشف الطلاب المسجلين وأكوادهم الرسمية (إداري)'
+            };
+
+            let rowsHtml = '';
+            let headersHtml = '';
+
+            if (type === 'roster_internal') {
+                headersHtml = `<th class="py-2.5 px-3 border">م</th><th class="py-2.5 px-3 border">الاسم الرباعي للطالب</th><th class="py-2.5 px-3 border">الصف الدراسي</th><th class="py-2.5 px-3 border">كود الطالب</th>`;
+                const list = state.students.filter(s => grade === 'ALL' || s.grade === grade);
+                rowsHtml = list.map((s, i) => `
+                    <tr>
+                        <td class="py-2 px-3 border font-mono">${i + 1}</td>
+                        <td class="py-2 px-3 border font-black">${escapeHTML(s.name)}</td>
+                        <td class="py-2 px-3 border">${escapeHTML(s.grade)}</td>
+                        <td class="py-2 px-3 border font-mono font-black" dir="ltr">${escapeHTML(s.code)}</td>
+                    </tr>
+                `).join('');
+            } else if (type === 'absence') {
+                headersHtml = `<th class="py-2.5 px-3 border">م</th><th class="py-2.5 px-3 border">الطالب</th><th class="py-2.5 px-3 border">الصف</th><th class="py-2.5 px-3 border">المادة</th><th class="py-2.5 px-3 border">التاريخ</th><th class="py-2.5 px-3 border">الحالة</th>`;
+                const list = state.attendance.filter(a => {
+                    if (a.status !== 'absent') return false;
+                    const st = getStudentByCode(a.studentCode);
+                    return grade === 'ALL' || (st && st.grade === grade);
+                });
+                rowsHtml = list.map((a, i) => {
+                    const st = getStudentByCode(a.studentCode);
+                    const exc = state.excuses.find(e => e.studentCode === a.studentCode && e.date === a.date);
+                    return `
+                        <tr>
+                            <td class="py-2 px-3 border font-mono">${i + 1}</td>
+                            <td class="py-2 px-3 border font-black">${escapeHTML(st ? st.name : a.studentCode)}</td>
+                            <td class="py-2 px-3 border">${escapeHTML(st ? st.grade : '')}</td>
+                            <td class="py-2 px-3 border">${escapeHTML(a.subject)}</td>
+                            <td class="py-2 px-3 border font-mono">${escapeHTML(a.date)}</td>
+                            <td class="py-2 px-3 border font-bold">${exc ? 'غياب بعذر رسمي' : 'غياب بدون عذر'}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } else if (type === 'honor') {
+                headersHtml = `<th class="py-2.5 px-3 border">م</th><th class="py-2.5 px-3 border">الطالب</th><th class="py-2.5 px-3 border">الصف</th><th class="py-2.5 px-3 border">المادة</th><th class="py-2.5 px-3 border">سبب التميز</th>`;
+                const list = state.stars.filter(s => {
+                    const st = getStudentByCode(s.studentCode);
+                    return grade === 'ALL' || (st && st.grade === grade);
+                });
+                rowsHtml = list.map((s, i) => {
+                    const st = getStudentByCode(s.studentCode);
+                    return `
+                        <tr>
+                            <td class="py-2 px-3 border font-mono">${i + 1}</td>
+                            <td class="py-2 px-3 border font-black">${escapeHTML(st ? st.name : s.studentCode)}</td>
+                            <td class="py-2 px-3 border">${escapeHTML(st ? st.grade : '')}</td>
+                            <td class="py-2 px-3 border">${escapeHTML(s.subject)}</td>
+                            <td class="py-2 px-3 border">${escapeHTML(s.reason)}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } else {
+                headersHtml = `<th class="py-2.5 px-3 border">م</th><th class="py-2.5 px-3 border">الطالب</th><th class="py-2.5 px-3 border">الصف</th><th class="py-2.5 px-3 border">المادة</th><th class="py-2.5 px-3 border">الملاحظة السلوكية</th><th class="py-2.5 px-3 border">التاريخ</th>`;
+                const list = state.attendance.filter(a => {
+                    if (a.behaviorType !== 'negative') return false;
+                    const st = getStudentByCode(a.studentCode);
+                    return grade === 'ALL' || (st && st.grade === grade);
+                });
+                rowsHtml = list.map((a, i) => {
+                    const st = getStudentByCode(a.studentCode);
+                    return `
+                        <tr>
+                            <td class="py-2 px-3 border font-mono">${i + 1}</td>
+                            <td class="py-2 px-3 border font-black">${escapeHTML(st ? st.name : a.studentCode)}</td>
+                            <td class="py-2 px-3 border">${escapeHTML(st ? st.grade : '')}</td>
+                            <td class="py-2 px-3 border">${escapeHTML(a.subject)}</td>
+                            <td class="py-2 px-3 border">${escapeHTML(a.behaviorNote)}</td>
+                            <td class="py-2 px-3 border font-mono">${escapeHTML(a.date)}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            if (!rowsHtml) {
+                rowsHtml = `<tr><td colspan="6" class="py-6 text-center text-slate-400 border">لا توجد بيانات مسجلة لهذا التقرير حالياً.</td></tr>`;
+            }
+
+            out.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between border-b-2 border-navy-900 pb-3">
+                        <div>
+                            <h3 class="text-base font-black text-navy-900">مدرسة الزهراء الخاصة</h3>
+                            <p class="text-xs font-bold text-slate-600">${titles[type]} — الصف: ${grade === 'ALL' ? 'جميع الصفوف' : escapeHTML(grade)}</p>
+                        </div>
+                        <span class="text-xs font-mono font-bold text-slate-500">تاريخ الطباعة: ${TODAY_ISO}</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right text-xs border-collapse">
+                            <thead class="bg-slate-100 text-navy-900 font-black">
+                                <tr>${headersHtml}</tr>
+                            </thead>
+                            <tbody>${rowsHtml}</tbody>
+                        </table>
+                    </div>
+                    <div class="pt-6 flex justify-between text-xs font-black text-navy-900">
+                        <span>توقيع شؤون الطلاب: ......................</span>
+                        <span>يعتمد / مدير المدرسة: ${escapeHTML(currentAdminSession ? currentAdminSession.name : '......................')}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Security Pins Update
+        function handleUpdateSecurityPins(e) {
+            e.preventDefault();
+            const newMgr = document.getElementById('sec-new-manager-pin').value.trim();
+            const newTch = document.getElementById('sec-new-teacher-pin').value.trim();
+            const newGame = document.getElementById('sec-new-game-pin').value.trim();
+
+            if (newMgr) state.securityPins.managerPin = newMgr;
+            if (newTch) state.securityPins.teacherPin = newTch;
+            if (newGame) state.securityPins.gamePin = newGame;
+
+            saveState();
+            document.getElementById('sec-new-manager-pin').value = '';
+            document.getElementById('sec-new-teacher-pin').value = '';
+            document.getElementById('sec-new-game-pin').value = '';
+            refreshManagerDashboard();
+            showToast('تم حفظ وتحديث الأرقام والأكواد السرية بنجاح');
+        }
+
+        // =========================================================================
+        // KEYBOARD & CANVAS INTERACTION FOR ARCADE GAMES
+        // =========================================================================
+        window.addEventListener('keydown', e => {
+            const arcadeCard = document.getElementById('pdf-arcade-game-card');
+            if (!arcadeCard || arcadeCard.classList.contains('hidden')) return;
+            if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                moveArcadeActor(-1);
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                moveArcadeActor(1);
+            } else if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                triggerArcadeAction();
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderPublicLanding();
+
+            const canvas = document.getElementById('arcade-game-canvas');
+            if (canvas) {
+                const handlePointer = clientX => {
+                    if (arcadeEngine.roundResolved) return;
+                    const rect = canvas.getBoundingClientRect();
+                    const relX = clientX - rect.left;
+                    const vIdx = Math.min(arcadeEngine.slotCount - 1, Math.max(0, Math.floor((relX / rect.width) * arcadeEngine.slotCount)));
+                    const slotIdx = (arcadeEngine.slotCount - 1) - vIdx;
+                    arcadeEngine.selectedSlot = slotIdx;
+                    if (pdfGameState.mode === 'keeper') {
+                        launchPenaltyKick(slotIdx);
+                    } else if (pdfGameState.mode === 'space') {
+                        triggerArcadeAction();
+                    }
+                };
+                canvas.addEventListener('click', e => handlePointer(e.clientX));
+                canvas.addEventListener('touchstart', e => {
+                    if (e.touches && e.touches[0]) {
+                        handlePointer(e.touches[0].clientX);
+                    }
+                }, { passive: true });
+            }
+        });
+    </script>
+</body>
+</html>
